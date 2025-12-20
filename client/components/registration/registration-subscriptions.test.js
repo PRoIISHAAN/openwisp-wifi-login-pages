@@ -91,7 +91,7 @@ const mockConfig = {
 
 jest.mock("../../utils/get-config", () => ({
   __esModule: true,
-  default: jest.fn((slug, loadDefault = false) => mockConfig),
+  default: jest.fn((slug, isTest) => mockConfig),
 }));
 jest.mock("axios");
 jest.mock("../../utils/redirect-to-payment");
@@ -227,7 +227,9 @@ const mountComponent = (passedProps) => {
   return render(
     <Provider store={mockedStore}>
       <MemoryRouter>
-        <Registration {...passedProps} />
+        <Routes>
+          <Route path="/*" element={<Registration {...passedProps} />} />
+        </Routes>
       </MemoryRouter>
     </Provider>
   );
@@ -257,7 +259,7 @@ describe("test subscriptions", () => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
     // Re-setup the getConfig mock after clearing
-    getConfig.mockImplementation((slug, loadDefault = false) => mockConfig);
+    getConfig.mockImplementation((slug, isTest) => mockConfig);
   });
 
   it("should not show choice form when plans is absent", () => {
@@ -655,9 +657,7 @@ describe("test subscriptions", () => {
     rerender(
       <Provider store={createMockStore()}>
         <MemoryRouter>
-          <Routes>
-            <Route path="/*" element={<Registration {...props} loading={false} />} />
-          </Routes>
+          <Registration {...props} loading={false} />
         </MemoryRouter>
       </Provider>
     );

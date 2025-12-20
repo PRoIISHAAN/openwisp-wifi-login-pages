@@ -184,17 +184,12 @@ export default class Status extends React.Component {
       if (settings.mobile_phone_verification && phone_number) {
         userInfo.phone_number = phone_number;
       }
-      this.setState({username, password, userInfo}, () => {
-        // if the user is being automatically logged in but it's not
-        // active anymore (eg: has been banned)
-        // automatically perform log out
-        if (is_active === false) {
-          this.handleLogout(false);
-        }
-      });
 
       // stop here if user is banned
       if (is_active === false) {
+        this.setState({username, password, userInfo}, () => {
+          this.handleLogout(false);
+        });
         return;
       }
 
@@ -215,23 +210,28 @@ export default class Status extends React.Component {
       if (method === "bank_card" && isVerified === false) {
         shouldLogin = shouldLogin && settings.payment_requires_internet;
       }
-      if (this.loginFormRef && this.loginFormRef.current && shouldLogin) {
-        this.storeValue(
-          captivePortalSyncAuth,
-          `${orgSlug}_mustLogin`,
-          false,
-          cookies,
-        );
-        this.notifyCpLogin(userData);
-        this.loginFormRef.current.submit();
-      } else if (!shouldLogin) {
-        // If the user is already logged in, we need to handle the
-        // the response from the captive portal.
-        if (captivePortalSyncAuth) {
-          this.handleLogin();
+
+      // Set username/password state first, then submit form in callback
+      // This ensures the iframe (which requires username) is rendered before form submission
+      this.setState({username, password, userInfo}, () => {
+        if (this.loginFormRef && this.loginFormRef.current && shouldLogin) {
+          this.storeValue(
+            captivePortalSyncAuth,
+            `${orgSlug}_mustLogin`,
+            false,
+            cookies,
+          );
+          this.notifyCpLogin(userData);
+          this.loginFormRef.current.submit();
+        } else {
+          // If the user is already logged in, we need to handle the
+          // the response from the captive portal.
+          if (!shouldLogin && captivePortalSyncAuth) {
+            this.handleLogin();
+          }
+          this.finalOperations();
         }
-        this.finalOperations();
-      }
+      });
     }
   }
 
@@ -242,6 +242,7 @@ export default class Status extends React.Component {
       clearInterval(this.usageIntervalId);
     }
     window.removeEventListener("resize", this.updateScreenWidth);
+    window.removeEventListener("message", this.handlePostMessage);
   }
 
   async finalOperations() {

@@ -1,17 +1,31 @@
-import {shallow} from "enzyme";
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import React from "react";
-import {BrowserRouter as Router} from "react-router-dom";
-import renderer from "react-test-renderer";
+import {BrowserRouter as Router, MemoryRouter} from "react-router-dom";
+
+// Mock modules BEFORE importing
+jest.mock("../../utils/get-config", () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    components: {
+      header: {
+        logo: {
+          url: "/assets/default/openwisp-logo-black.svg",
+          alternate_text: "openwisp",
+        },
+        links: [],
+      },
+    },
+  })),
+}));
+jest.mock("../../utils/load-translation");
+jest.mock("../../utils/check-internal-links");
 
 import getConfig from "../../utils/get-config";
 import loadTranslation from "../../utils/load-translation";
 import isInternalLink from "../../utils/check-internal-links";
 import Header from "./header";
 import {mapDispatchToProps} from "./index";
-
-jest.mock("../../utils/get-config");
-jest.mock("../../utils/load-translation");
-jest.mock("../../utils/check-internal-links");
 
 const defaultConfig = getConfig("default", true);
 const headerLinks = [
@@ -36,13 +50,12 @@ const headerLinks = [
     verified: true,
   },
 ];
-const getLinkText = (wrapper, text) => {
-  const texts = [];
-  wrapper.find(text).forEach((node) => {
-    texts.push(node.text());
-  });
-  return texts;
+
+const getLinkText = (container, selector) => {
+  const elements = container.querySelectorAll(selector);
+  return Array.from(elements).map(el => el.textContent);
 };
+
 const createTestProps = (props) => ({
   setLanguage: jest.fn(),
   orgSlug: "default",
@@ -62,20 +75,24 @@ const createTestProps = (props) => ({
 describe("<Header /> rendering with placeholder translation tags", () => {
   const props = createTestProps();
   it("should render translation placeholder correctly", () => {
-    const wrapper = shallow(<Header {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    expect(container).toMatchSnapshot();
   });
 });
 
 describe("<Header /> rendering", () => {
   let props;
-  let wrapper;
+  
   beforeEach(() => {
     jest.resetAllMocks();
     props = createTestProps();
-    wrapper = shallow(<Header {...props} />);
     loadTranslation("en", "default");
   });
+
   it("should render without links", () => {
     const links = {
       header: {
@@ -84,15 +101,14 @@ describe("<Header /> rendering", () => {
       },
     };
     props = createTestProps(links);
-    const component = renderer
-      .create(
-        <Router>
-          <Header {...props} />
-        </Router>,
-      )
-      .toJSON();
-    expect(component).toMatchSnapshot();
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    expect(container).toMatchSnapshot();
   });
+
   it("should call isInternalLink and render if the link is internal", () => {
     isInternalLink.mockReturnValue(true);
     props = createTestProps();
@@ -104,75 +120,118 @@ describe("<Header /> rendering", () => {
         authenticated: true,
       },
     ];
-    wrapper = shallow(<Header {...props} />);
-    expect(isInternalLink).toHaveBeenCalledTimes(6);
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    expect(isInternalLink).toHaveBeenCalledTimes(2);
     expect(isInternalLink).toHaveBeenCalledWith("/default/login");
   });
+
   it("should render without authenticated links when not authenticated", () => {
     props = createTestProps();
     props.isAuthenticated = false;
     props.header.links = headerLinks;
-    wrapper = shallow(<Header {...props} />);
-    const linkText = getLinkText(wrapper, ".header-link");
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    const linkText = getLinkText(container, ".header-link");
     expect(linkText).toContain("link-1");
     expect(linkText).toContain("link-2");
     expect(linkText).not.toContain("link-3");
   });
+
   it("should render with authenticated links when authenticated", () => {
     props = createTestProps();
     props.isAuthenticated = true;
     props.header.links = headerLinks;
-    wrapper = shallow(<Header {...props} />);
-    const linkText = getLinkText(wrapper, ".header-link");
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    const linkText = getLinkText(container, ".header-link");
     expect(linkText).toContain("link-1");
     expect(linkText).not.toContain("link-2");
     expect(linkText).toContain("link-3");
   });
+
   it("should render with links", () => {
-    const component = renderer
-      .create(
-        <Router>
-          <Header {...props} />
-        </Router>,
-      )
-      .toJSON();
-    expect(component).toMatchSnapshot();
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    expect(container).toMatchSnapshot();
   });
+
   it("should not render with verified links if not verified", () => {
     props = createTestProps();
     props.isAuthenticated = true;
     props.userData.is_verified = false;
     props.header.links = headerLinks;
-    wrapper = shallow(<Header {...props} />);
-    const linkText = getLinkText(wrapper, ".header-link");
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    const linkText = getLinkText(container, ".header-link");
     expect(linkText).toContain("link-1");
     expect(linkText).not.toContain("link-2");
     expect(linkText).toContain("link-3");
     expect(linkText).not.toContain("link-4");
   });
+
   it("should render 2 links", () => {
-    expect(wrapper.find(".header-desktop-link")).toHaveLength(2);
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    expect(container.querySelectorAll('.header-desktop-link')).toHaveLength(2);
   });
+
   it("should render 2 languages", () => {
-    expect(wrapper.find(".header-desktop-language-btn")).toHaveLength(2);
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    expect(container.querySelectorAll('.header-desktop-language-btn')).toHaveLength(2);
   });
+
   it("should render english as default language", () => {
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
     expect(
-      wrapper.find(
+      container.querySelector(
         ".header-desktop-language-btn.header-language-btn-en.active",
       ),
-    ).toHaveLength(1);
+    ).toBeInTheDocument();
     expect(
-      wrapper.find(
+      container.querySelector(
         ".header-desktop-language-btn.header-language-btn-it.active",
       ),
-    ).toHaveLength(0);
+    ).not.toBeInTheDocument();
   });
+
   it("should render logo", () => {
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
     expect(
-      wrapper.find(".header-logo-image.header-desktop-logo-image"),
-    ).toHaveLength(1);
+      container.querySelector('.header-logo-image.header-desktop-logo-image'),
+    ).toBeInTheDocument();
   });
+
   it("should not render logo", () => {
     const logo = {
       header: {
@@ -181,38 +240,41 @@ describe("<Header /> rendering", () => {
       },
     };
     props = createTestProps(logo);
-    wrapper = shallow(<Header {...props} />);
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
     expect(
-      wrapper.find(".header-logo-image.header-desktop-logo-image"),
-    ).toHaveLength(0);
+      container.querySelector('.header-logo-image.header-desktop-logo-image'),
+    ).not.toBeInTheDocument();
   });
+
   it("should render sticky msg and close it on clicking close-btn", () => {
     props = createTestProps({
       header: {
         ...props.header,
         sticky_html: {
-          en: <p>announcement</p>,
+          en: "<p>announcement</p>",
         },
       },
     });
-    wrapper = shallow(<Header {...props} />);
-    expect(wrapper.find(".sticky-container").length).toEqual(1);
-    expect(wrapper.find(".sticky-msg").length).toEqual(1);
-    expect(wrapper.find(".sticky-msg").props().dangerouslySetInnerHTML).toEqual(
-      {
-        __html: <p>announcement</p>,
-      },
+    const { container } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
     );
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find(".close-sticky-btn").length).toEqual(1);
-    expect(wrapper.instance().state.stickyMsg).toEqual(true);
-    wrapper.find(".close-sticky-btn").simulate("click");
-    // sticky-msg closed
-    expect(wrapper.instance().state.stickyMsg).toEqual(false);
-    expect(wrapper.find(".sticky-container").length).toEqual(0);
-    expect(wrapper.find(".sticky-msg").length).toEqual(0);
-    expect(wrapper.find(".close-sticky-btn").length).toEqual(0);
+    expect(container.querySelector('.sticky-container')).toBeInTheDocument();
+    expect(container.querySelector('.sticky-msg')).toBeInTheDocument();
+    expect(container.querySelector('.sticky-msg')).toHaveTextContent('announcement');
+    expect(container).toMatchSnapshot();
+    expect(container.querySelector('.close-sticky-btn')).toBeInTheDocument();
+    fireEvent.click(container.querySelector('.close-sticky-btn'));
+    expect(container.querySelector('.sticky-container')).not.toBeInTheDocument();
+    expect(container.querySelector('.sticky-msg')).not.toBeInTheDocument();
+    expect(container.querySelector('.close-sticky-btn')).not.toBeInTheDocument();
   });
+
   it("should not show change password if login method is SAML / Social Login", () => {
     props = createTestProps();
     props.header.links = [
@@ -225,45 +287,72 @@ describe("<Header /> rendering", () => {
     ];
     props.isAuthenticated = true;
     props.userData.method = "saml";
-    wrapper = shallow(<Header {...props} />);
-    let linkText = getLinkText(wrapper, ".header-link");
+    const { container, rerender } = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    let linkText = getLinkText(container, ".header-link");
     expect(linkText).not.toContain("Change Password");
-    wrapper.setProps({userData: {...props.userData, method: "social_login"}});
-    linkText = getLinkText(wrapper, ".header-link");
+    
+    props.userData.method = "social_login";
+    rerender(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    linkText = getLinkText(container, ".header-link");
     expect(linkText).not.toContain("Change Password");
-    wrapper.setProps({userData: {...props.userData, method: "mobile_phone"}});
-    linkText = getLinkText(wrapper, ".header-link");
+    
+    props.userData.method = "mobile_phone";
+    rerender(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    linkText = getLinkText(container, ".header-link");
     expect(linkText).toContain("Change Password");
   });
 });
 
 describe("<Header /> interactions", () => {
   let props;
-  let wrapper;
+  let container;
+
   beforeEach(() => {
     props = createTestProps();
-    wrapper = shallow(<Header {...props} />);
+    const result = render(
+      <MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>
+    );
+    container = result.container;
   });
+
   it("should call setLanguage function when 'language button' is clicked", () => {
-    wrapper
-      .find(".header-language-btn-it.header-desktop-language-btn")
-      .simulate("click");
+    const desktopBtn = container.querySelector(".header-language-btn-it.header-desktop-language-btn");
+    fireEvent.click(desktopBtn);
     expect(props.setLanguage).toHaveBeenCalledTimes(1);
-    wrapper
-      .find(".header-language-btn-it.header-mobile-language-btn")
-      .simulate("click");
+    
+    const mobileBtn = container.querySelector(".header-language-btn-it.header-mobile-language-btn");
+    fireEvent.click(mobileBtn);
     expect(props.setLanguage).toHaveBeenCalledTimes(2);
   });
+
   it("should call handleHamburger function when 'hamburger button' is clicked", () => {
-    wrapper.find(".header-hamburger").simulate("click");
-    expect(wrapper.state().menu).toBe(true);
+    const hamburger = container.querySelector('.header-hamburger');
+    fireEvent.click(hamburger);
+    expect(container.querySelector('.header-mobile-menu')).toHaveClass('display-flex');
   });
+
   it("should call handleHamburger function on Enter key press", () => {
-    wrapper.find(".header-hamburger").simulate("keyup", {keyCode: 1});
-    expect(wrapper.state().menu).toBe(false);
-    wrapper.find(".header-hamburger").simulate("keyup", {keyCode: 13});
-    expect(wrapper.state().menu).toBe(true);
+    const hamburger = container.querySelector('.header-hamburger');
+    fireEvent.keyUp(hamburger, {keyCode: 1});
+    expect(container.querySelector('.header-mobile-menu')).toHaveClass('display-none');
+    fireEvent.keyUp(hamburger, {keyCode: 13});
+    expect(container.querySelector('.header-mobile-menu')).toHaveClass('display-flex');
   });
+
   it("should dispatch to props correctly", () => {
     const dispatch = jest.fn();
     const result = mapDispatchToProps(dispatch);

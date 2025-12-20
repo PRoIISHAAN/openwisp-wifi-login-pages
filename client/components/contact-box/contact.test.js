@@ -1,13 +1,23 @@
-import {shallow} from "enzyme";
+import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import React from "react";
-import ShallowRenderer from "react-test-renderer/shallow";
+
+// Mock modules BEFORE importing
+jest.mock("../../utils/get-config", () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    components: {
+      contact_page: {
+        social_links: [],
+      },
+    },
+  })),
+}));
+jest.mock("../../utils/load-translation");
 
 import getConfig from "../../utils/get-config";
 import loadTranslation from "../../utils/load-translation";
 import Contact from "./contact";
-
-jest.mock("../../utils/get-config");
-jest.mock("../../utils/load-translation");
 
 const defaultConfig = getConfig("default", true);
 const links = [
@@ -43,9 +53,8 @@ const createTestProps = (props) => ({
 describe("<Contact /> rendering with placeholder translation tags", () => {
   const props = createTestProps();
   it("should render translation placeholder correctly", () => {
-    const renderer = new ShallowRenderer();
-    const wrapper = renderer.render(<Contact {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    const {container} = render(<Contact {...props} />);
+    expect(container).toMatchSnapshot();
   });
 });
 
@@ -56,30 +65,33 @@ describe("<Status /> rendering", () => {
   });
   it("should render correctly", () => {
     props = createTestProps();
-    const renderer = new ShallowRenderer();
-    const component = renderer.render(<Contact {...props} />);
-    expect(component).toMatchSnapshot();
+    const {container} = render(<Contact {...props} />);
+    expect(container).toMatchSnapshot();
   });
 
   it("should render without authenticated links when not authenticated", () => {
     props = createTestProps();
     props.contactPage.social_links = links;
     props.isAuthenticated = false;
-    const wrapper = shallow(<Contact {...props} />);
-    expect(wrapper.find(".contact-image")).toHaveLength(2);
-    expect(wrapper.find(".link.google")).toHaveLength(1);
-    expect(wrapper.find(".link.facebook")).toHaveLength(1);
-    expect(wrapper.find(".link.twitter")).toHaveLength(0);
+    const { container } = render(<Contact {...props} />);
+    
+    // Use querySelectorAll for multiple elements
+    expect(container.querySelectorAll('.contact-image')).toHaveLength(2);
+    expect(container.querySelector('.link.google')).toBeInTheDocument();
+    expect(container.querySelector('.link.facebook')).toBeInTheDocument();
+    expect(container.querySelector('.link.twitter')).not.toBeInTheDocument();
   });
 
   it("should render with authenticated links when authenticated", () => {
     props = createTestProps();
     props.contactPage.social_links = links;
     props.isAuthenticated = true;
-    const wrapper = shallow(<Contact {...props} />);
-    expect(wrapper.find(".contact-image")).toHaveLength(2);
-    expect(wrapper.find(".link.google")).toHaveLength(1);
-    expect(wrapper.find(".link.twitter")).toHaveLength(1);
-    expect(wrapper.find(".link.facebook")).toHaveLength(0);
+    const { container } = render(<Contact {...props} />);
+    
+    // Use querySelectorAll for multiple elements
+    expect(container.querySelectorAll('.contact-image')).toHaveLength(2);
+    expect(container.querySelector('.link.google')).toBeInTheDocument();
+    expect(container.querySelector('.link.twitter')).toBeInTheDocument();
+    expect(container.querySelector('.link.facebook')).not.toBeInTheDocument();
   });
 });
