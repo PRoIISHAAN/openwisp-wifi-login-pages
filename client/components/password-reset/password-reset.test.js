@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 import axios from "axios";
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
 import {toast} from "react-toastify";

@@ -1,13 +1,11 @@
 import axios from "axios";
 /* eslint-disable camelcase */
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import PropTypes from "prop-types";
 import React from "react";
 import {Cookies} from "react-cookie";
 import {MemoryRouter} from "react-router-dom";
 import {Provider} from "react-redux";
-import {t} from "ttag";
 
 import getConfig from "../../utils/get-config";
 import logError from "../../utils/log-error";
@@ -155,6 +153,7 @@ describe("<PasswordChange /> interactions", () => {
   it("test handleSubmit method", async () => {
     axios
       .mockImplementationOnce(() =>
+        // eslint-disable-next-line prefer-promise-reject-errors
         Promise.reject({
           response: {
             status: 401,
@@ -307,12 +306,7 @@ describe("<PasswordChange /> interactions", () => {
     props = createTestProps();
     props.userData.method = "saml";
 
-    const {container, rerender} = renderWithProviders(<PasswordChange {...props} />);
-
-    // Check for redirect/Navigate component
-    const formElement = container.querySelector('form');
-    // If method is SAML/Social, form shouldn't be shown or should redirect
-    // This depends on implementation - adjust based on actual behavior
+    const {rerender} = renderWithProviders(<PasswordChange {...props} />);
 
     // Test with social_login method
     props.userData.method = "social_login";

@@ -1,5 +1,5 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
 import {MemoryRouter} from "react-router-dom";
@@ -134,7 +134,7 @@ describe("Test <PaymentProcess /> cases", () => {
     });
     validateToken.mockReturnValue(true);
     
-    const {container} = renderWithProviders(<PaymentProcess {...props} />);
+    renderWithProviders(<PaymentProcess {...props} />);
     
     await tick();
     
@@ -152,7 +152,7 @@ describe("Test <PaymentProcess /> cases", () => {
     });
     validateToken.mockReturnValue(true);
     
-    const {container} = renderWithProviders(<PaymentProcess {...props} />);
+    renderWithProviders(<PaymentProcess {...props} />);
     
     await tick();
     
@@ -168,7 +168,7 @@ describe("Test <PaymentProcess /> cases", () => {
     });
     validateToken.mockReturnValue(false);
     
-    const {container} = renderWithProviders(<PaymentProcess {...props} />);
+    renderWithProviders(<PaymentProcess {...props} />);
     
     await tick();
     
@@ -215,7 +215,7 @@ describe("Test <PaymentProcess /> cases", () => {
       delete events[event];
     });
     
-    const {container, unmount} = renderWithProviders(<PaymentProcess {...props} />);
+    const {unmount} = renderWithProviders(<PaymentProcess {...props} />);
     
     await tick();
     
@@ -262,7 +262,7 @@ describe("Test <PaymentProcess /> cases", () => {
       events[event] = callback;
     });
     
-    const {container} = renderWithProviders(<PaymentProcess {...props} />);
+    renderWithProviders(<PaymentProcess {...props} />);
     
     await tick();
     
@@ -299,7 +299,7 @@ describe("Test <PaymentProcess /> cases", () => {
       events[event] = callback;
     });
     
-    const {container} = renderWithProviders(<PaymentProcess {...props} />);
+    renderWithProviders(<PaymentProcess {...props} />);
     
     await tick();
     

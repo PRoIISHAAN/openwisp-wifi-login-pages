@@ -1,11 +1,10 @@
 import React from "react";
-import {BrowserRouter as Router, MemoryRouter} from "react-router-dom";
+import {MemoryRouter} from "react-router-dom";
 import axios from "axios";
 import {Cookies} from "react-cookie";
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import * as dependency from "react-toastify";
-import {createMemoryHistory} from "history";
 import authenticate from "./authenticate";
 import isInternalLink from "./check-internal-links";
 import customMerge from "./custom-merge";

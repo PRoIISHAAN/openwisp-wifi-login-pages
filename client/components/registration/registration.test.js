@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
 import axios from "axios";
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
 import {toast} from "react-toastify";
@@ -13,7 +13,6 @@ import tick from "../../utils/tick";
 import getConfig from "../../utils/get-config";
 import loadTranslation from "../../utils/load-translation";
 import Registration from "./registration";
-import submitOnEnter from "../../utils/submit-on-enter";
 
 // Mock modules BEFORE importing
 const mockConfig = {
@@ -417,7 +416,7 @@ describe("<Registration /> interactions", () => {
     props.settings = {mobile_phone_verification: true};
     const {container} = renderWithProviders(<Registration {...props} />);
     
-    const errorSpyToast = jest.spyOn(toast, "error");
+    jest.spyOn(toast, "error");
     const form = container.querySelector("form");
     const password1Input = container.querySelector(".row.password input");
     const password2Input = container.querySelector(".row.password-confirm input");
@@ -481,7 +480,7 @@ describe("<Registration /> interactions", () => {
   });
 
   it("should execute handleResponse correctly", async () => {
-    const spyToast = jest.spyOn(toast, "info");
+    jest.spyOn(toast, "info");
     const {container} = renderWithProviders(<Registration {...props} />);
     
     // This tests internal behavior - adjust based on actual component implementation
@@ -544,7 +543,6 @@ describe("<Registration /> interactions", () => {
 
 describe("Registration and Mobile Phone Verification interactions", () => {
   let props;
-  const event = {preventDefault: jest.fn()};
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -560,7 +558,7 @@ describe("Registration and Mobile Phone Verification interactions", () => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
     // Re-setup the getConfig mock after clearing
-    getConfig.mockImplementation((slug, isTest) => mockConfig);
+    getConfig.mockImplementation(() => mockConfig);
   });
 
   it("should show phone number field", async () => {
@@ -668,7 +666,6 @@ describe("Registration and Mobile Phone Verification interactions", () => {
 
 describe("Registration without identity verification (Email registration)", () => {
   let props;
-  const event = {preventDefault: jest.fn()};
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -683,7 +680,7 @@ describe("Registration without identity verification (Email registration)", () =
     jest.clearAllMocks();
     jest.restoreAllMocks();
     // Re-setup the getConfig mock after clearing
-    getConfig.mockImplementation((slug, isTest) => mockConfig);
+    getConfig.mockImplementation(() => mockConfig);
   });
 
   it("should not show phone number field", async () => {

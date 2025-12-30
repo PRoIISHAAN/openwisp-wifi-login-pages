@@ -1,10 +1,10 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
 import axios from "axios";
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
-import {BrowserRouter as Router, MemoryRouter} from "react-router-dom";
+import {MemoryRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 import {toast} from "react-toastify";
 import getConfig from "../../utils/get-config";
@@ -303,9 +303,11 @@ describe("<PasswordConfirm /> interactions", () => {
   it("should toggle password visibility", async () => {
     const {container} = renderWithProviders(props);
 
+    let passwordInput;
+    let confirmInput;
     await waitFor(() => {
-      const passwordInput = container.querySelector('input#password');
-      const confirmInput = container.querySelector('input#password-confirm');
+      passwordInput = container.querySelector('input#password');
+      confirmInput = container.querySelector('input#password-confirm');
 
       expect(passwordInput).toBeInTheDocument();
       expect(confirmInput).toBeInTheDocument();
@@ -313,7 +315,7 @@ describe("<PasswordConfirm /> interactions", () => {
       // Initially should be password type
     });
     expect(confirmInput).toHaveAttribute('type', 'password');
-    expect(passwordInput).toHaveAttribute('type', 'password');;
+    expect(passwordInput).toHaveAttribute('type', 'password');
 
     const passwordToggles = container.querySelectorAll('.password-toggle');
 

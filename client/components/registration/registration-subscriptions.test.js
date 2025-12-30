@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
 import axios from "axios";
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
 import {toast} from "react-toastify";
@@ -257,7 +257,7 @@ describe("test subscriptions", () => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
     // Re-setup the getConfig mock after clearing
-    getConfig.mockImplementation((slug, isTest) => mockConfig);
+    getConfig.mockImplementation(() => mockConfig);
   });
 
   it("should not show choice form when plans is absent", () => {
@@ -430,7 +430,7 @@ describe("test subscriptions", () => {
     // Use mockImplementation to handle multiple calls persistently
     let callCount = 0;
     axios.mockImplementation(() => {
-      callCount++;
+      callCount += 1;
       if (callCount === 1) {
         return Promise.resolve({
           status: 201,
@@ -648,7 +648,7 @@ describe("test subscriptions", () => {
       }),
     );
 
-    const {container, rerender} = renderWithProviders(<Registration {...props} loading />);
+    const {rerender} = renderWithProviders(<Registration {...props} loading />);
 
     await tick();
 

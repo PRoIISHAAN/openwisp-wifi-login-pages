@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import React, {Suspense} from "react";
-import {MemoryRouter, Navigate, Route} from "react-router-dom";
+import React from "react";
+import {MemoryRouter} from "react-router-dom";
 import {Cookies} from "react-cookie";
 import {Provider} from "react-redux";
 import {HelmetProvider} from "react-helmet-async";
