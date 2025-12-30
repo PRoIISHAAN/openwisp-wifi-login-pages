@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
 import getConfig from "../../utils/get-config";
@@ -18,13 +18,11 @@ const createTestProps = (props) => ({
   ...props,
 });
 
-const renderWithRouter = (component) => {
-  return render(
+const renderWithRouter = (component) => render(
     <MemoryRouter>
       {component}
     </MemoryRouter>
   );
-};
 
 describe("<DoesNotExist /> rendering with placeholder translation tags", () => {
   const props = createTestProps();
@@ -52,7 +50,7 @@ describe("<DoesNotExist /> rendering", () => {
 
   it("should set title with organisation name", () => {
     const props = createTestProps();
-    const { container } = renderWithRouter(<DoesNotExist {...props} />);
+    renderWithRouter(<DoesNotExist {...props} />);
     const setTitleMock = props.setTitle.mock;
     expect(setTitleMock.calls.pop()).toEqual(["404 Not found", props.orgName]);
   });
@@ -61,7 +59,7 @@ describe("<DoesNotExist /> rendering", () => {
     const props = createTestProps();
     props.page = undefined;
     props.orgName = undefined;
-    const { container } = renderWithRouter(<DoesNotExist {...props} />);
+    renderWithRouter(<DoesNotExist {...props} />);
     const setTitleMock = props.setTitle.mock;
     expect(setTitleMock.calls.length).toBe(0);
   });

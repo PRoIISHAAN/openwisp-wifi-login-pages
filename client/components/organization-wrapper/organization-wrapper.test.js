@@ -1,11 +1,16 @@
 /* eslint-disable camelcase */
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import React, {Suspense} from "react";
-import {MemoryRouter, Navigate, Route} from "react-router-dom";
+import React from "react";
+import {MemoryRouter} from "react-router-dom";
 import {Cookies} from "react-cookie";
 import {Provider} from "react-redux";
 import {HelmetProvider} from "react-helmet-async";
+
+import getConfig from "../../utils/get-config";
+import loadTranslation from "../../utils/load-translation";
+import OrganizationWrapper from "./organization-wrapper";
+import needsVerify from "../../utils/needs-verify";
 
 // Mock modules BEFORE importing
 jest.mock("../../utils/get-config", () => ({
@@ -35,11 +40,6 @@ jest.mock("../../utils/get-config", () => ({
 }));
 jest.mock("../../utils/load-translation", () => jest.fn().mockResolvedValue(undefined));
 jest.mock("../../utils/needs-verify");
-
-import getConfig from "../../utils/get-config";
-import loadTranslation from "../../utils/load-translation";
-import OrganizationWrapper from "./organization-wrapper";
-import needsVerify from "../../utils/needs-verify";
 
 const userData = {
   is_active: true,

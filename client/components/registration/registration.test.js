@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
 import axios from "axios";
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
 import {toast} from "react-toastify";
@@ -9,6 +9,10 @@ import {MemoryRouter, Route, Routes} from "react-router-dom";
 import {Provider} from "react-redux";
 import {t} from "ttag";
 import tick from "../../utils/tick";
+
+import getConfig from "../../utils/get-config";
+import loadTranslation from "../../utils/load-translation";
+import Registration from "./registration";
 
 // Mock modules BEFORE importing
 const mockConfig = {
@@ -82,17 +86,12 @@ const mockConfig = {
 
 jest.mock("../../utils/get-config", () => ({
   __esModule: true,
-  default: jest.fn((slug, isTest) => mockConfig),
+  default: jest.fn(() => mockConfig),
 }));
 jest.mock("../../utils/load-translation");
 jest.mock("../../utils/submit-on-enter");
 jest.mock("../../utils/history");
 jest.mock("axios");
-
-import getConfig from "../../utils/get-config";
-import loadTranslation from "../../utils/load-translation";
-import Registration from "./registration";
-import submitOnEnter from "../../utils/submit-on-enter";
 
 const createTestProps = (props, configName = "default") => {
   const config = getConfig(configName);
@@ -145,15 +144,13 @@ const createMockStore = () => {
   };
 };
 
-const renderWithProviders = (component) => {
-  return render(
+const renderWithProviders = (component) => render(
     <Provider store={createMockStore()}>
       <MemoryRouter>
         {component}
       </MemoryRouter>
     </Provider>
   );
-};
 
 const responseData = {
   key: "8a2b2b2dd963de23c17db30a227505f879866630",
@@ -387,8 +384,8 @@ describe("<Registration /> interactions", () => {
     const firstNameLabel = container.querySelector("[for='first_name']");
     const locationLabel = container.querySelector("[for='location']");
     
-    expect(firstNameLabel.textContent).toEqual("First name (optional)");
-    expect(locationLabel.textContent).toEqual("Location (optional)");
+    expect(firstNameLabel).toHaveTextContent("First name (optional)");
+    expect(locationLabel).toHaveTextContent("Location (optional)");
     expect(container.querySelector('.last_name')).not.toBeInTheDocument();
     expect(container.querySelector('.birth_date')).not.toBeInTheDocument();
   });
@@ -401,10 +398,10 @@ describe("<Registration /> interactions", () => {
     
     const {container} = renderWithProviders(<Registration {...props} />);
     
-    expect(container.querySelector("[for='first_name']").textContent).toEqual("First name");
-    expect(container.querySelector("[for='birth_date']").textContent).toEqual("Birth date");
-    expect(container.querySelector("[for='last_name']").textContent).toEqual("Last name (optional)");
-    expect(container.querySelector("[for='location']").textContent).toEqual("Location (optional)");
+    expect(container.querySelector("[for='first_name']")).toHaveTextContent("First name");
+    expect(container.querySelector("[for='birth_date']")).toHaveTextContent("Birth date");
+    expect(container.querySelector("[for='last_name']")).toHaveTextContent("Last name (optional)");
+    expect(container.querySelector("[for='location']")).toHaveTextContent("Location (optional)");
   });
 
   it("should execute authenticate in mobile phone verification flow", async () => {
@@ -419,7 +416,7 @@ describe("<Registration /> interactions", () => {
     props.settings = {mobile_phone_verification: true};
     const {container} = renderWithProviders(<Registration {...props} />);
     
-    const errorSpyToast = jest.spyOn(toast, "error");
+    jest.spyOn(toast, "error");
     const form = container.querySelector("form");
     const password1Input = container.querySelector(".row.password input");
     const password2Input = container.querySelector(".row.password-confirm input");
@@ -483,7 +480,7 @@ describe("<Registration /> interactions", () => {
   });
 
   it("should execute handleResponse correctly", async () => {
-    const spyToast = jest.spyOn(toast, "info");
+    jest.spyOn(toast, "info");
     const {container} = renderWithProviders(<Registration {...props} />);
     
     // This tests internal behavior - adjust based on actual component implementation
@@ -546,7 +543,6 @@ describe("<Registration /> interactions", () => {
 
 describe("Registration and Mobile Phone Verification interactions", () => {
   let props;
-  const event = {preventDefault: jest.fn()};
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -562,7 +558,7 @@ describe("Registration and Mobile Phone Verification interactions", () => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
     // Re-setup the getConfig mock after clearing
-    getConfig.mockImplementation((slug, isTest) => mockConfig);
+    getConfig.mockImplementation(() => mockConfig);
   });
 
   it("should show phone number field", async () => {
@@ -670,7 +666,6 @@ describe("Registration and Mobile Phone Verification interactions", () => {
 
 describe("Registration without identity verification (Email registration)", () => {
   let props;
-  const event = {preventDefault: jest.fn()};
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -685,7 +680,7 @@ describe("Registration without identity verification (Email registration)", () =
     jest.clearAllMocks();
     jest.restoreAllMocks();
     // Re-setup the getConfig mock after clearing
-    getConfig.mockImplementation((slug, isTest) => mockConfig);
+    getConfig.mockImplementation(() => mockConfig);
   });
 
   it("should not show phone number field", async () => {

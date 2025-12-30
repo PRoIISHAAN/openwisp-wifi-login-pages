@@ -1,21 +1,26 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
 import axios from "axios";
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {toast} from "react-toastify";
 import React from "react";
-import PropTypes from "prop-types";
 import {Cookies} from "react-cookie";
 import {MemoryRouter} from "react-router-dom";
 import {Provider} from "react-redux";
-import {loadingContextValue} from "../../utils/loading-context";
 import tick from "../../utils/tick";
+
+import getConfig from "../../utils/get-config";
+import MobilePhoneVerification from "./mobile-phone-verification";
+import validateToken from "../../utils/validate-token";
+import loadTranslation from "../../utils/load-translation";
+import logError from "../../utils/log-error";
+import handleLogout from "../../utils/handle-logout";
 
 // Mock modules BEFORE importing
 jest.mock("../../utils/get-config", () => ({
   __esModule: true,
-  default: jest.fn((slug, isTest) => ({
+  default: jest.fn(() => ({
     slug: "default",
     name: "default name",
     components: {
@@ -38,13 +43,6 @@ jest.mock("../../utils/load-translation");
 jest.mock("../../utils/log-error");
 jest.mock("../../utils/handle-logout");
 jest.mock("axios");
-
-import getConfig from "../../utils/get-config";
-import MobilePhoneVerification from "./mobile-phone-verification";
-import validateToken from "../../utils/validate-token";
-import loadTranslation from "../../utils/load-translation";
-import logError from "../../utils/log-error";
-import handleLogout from "../../utils/handle-logout";
 
 const createTestProps = function (props, configName = "test-org-2") {
   const config = getConfig(configName);
@@ -91,15 +89,13 @@ const createMockStore = () => {
   };
 };
 
-const renderWithProviders = (component) => {
-  return render(
+const renderWithProviders = (component) => render(
     <Provider store={createMockStore()}>
       <MemoryRouter>
         {component}
       </MemoryRouter>
     </Provider>
   );
-};
 
 const userData = {
   response_code: "AUTH_TOKEN_VALIDATION_SUCCESSFUL",
@@ -138,9 +134,7 @@ describe("<MobilePhoneVerification /> rendering with placeholder translation tag
 
 describe("Mobile Phone Token verification: standard flow", () => {
   let props;
-  let lastConsoleOutuput;
   let originalError;
-  const event = {preventDefault: jest.fn()};
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -157,9 +151,8 @@ describe("Mobile Phone Token verification: standard flow", () => {
     validateToken.mockClear();
     // console mocking
     originalError = console.error;
-    lastConsoleOutuput = null;
-    console.error = (data) => {
-      lastConsoleOutuput = data;
+    console.error = () => {
+      // Suppress console.error output in tests
     };
   });
 
@@ -198,7 +191,7 @@ describe("Mobile Phone Token verification: standard flow", () => {
 
     // Wait for component to fully render with phone number
     await waitFor(() => {
-      expect(container.querySelector('form .row .label').textContent).toContain("+393660011222");
+      expect(container.querySelector('form .row .label')).toHaveTextContent(/\+393660011222/);
     });
 
     expect(axios).toHaveBeenCalled();
@@ -288,7 +281,7 @@ describe("Mobile Phone Token verification: standard flow", () => {
     // Then createPhoneToken should succeed
     let callCount = 0;
     axios.mockImplementation(() => {
-      callCount++;
+      callCount += 1;
       if (callCount === 1) {
         // First call: activePhoneToken - returns 404 (handled silently)
         return Promise.reject({
@@ -548,7 +541,7 @@ describe("Mobile Phone Token verification: standard flow", () => {
   });
 
   it("should set title", async () => {
-    const {container} = renderWithProviders(<MobilePhoneVerification {...props} />);
+    renderWithProviders(<MobilePhoneVerification {...props} />);
 
     await tick();
 
@@ -643,7 +636,7 @@ describe("Mobile Phone Token verification: corner cases", () => {
     validateToken.mockReturnValue(true);
     props.userData = {...userData, is_active: true, is_verified: true};
 
-    const {container} = renderWithProviders(<MobilePhoneVerification {...props} />);
+    renderWithProviders(<MobilePhoneVerification {...props} />);
 
     await tick();
 
@@ -655,7 +648,7 @@ describe("Mobile Phone Token verification: corner cases", () => {
     validateToken.mockReturnValue(true);
     props.settings.mobile_phone_verification = false;
 
-    const {container} = renderWithProviders(<MobilePhoneVerification {...props} />);
+    renderWithProviders(<MobilePhoneVerification {...props} />);
 
     await tick();
 

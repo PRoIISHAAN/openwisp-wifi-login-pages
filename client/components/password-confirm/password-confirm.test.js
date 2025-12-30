@@ -1,10 +1,10 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
 import axios from "axios";
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
-import {BrowserRouter as Router, MemoryRouter} from "react-router-dom";
+import {MemoryRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 import {toast} from "react-toastify";
 import getConfig from "../../utils/get-config";
@@ -56,7 +56,7 @@ const mockConfig = {
 jest.mock("axios");
 jest.mock("../../utils/get-config", () => ({
   __esModule: true,
-  default: jest.fn((slug, isTest) => mockConfig),
+  default: jest.fn(() => mockConfig),
 }));
 jest.mock("../../utils/load-translation");
 
@@ -148,7 +148,7 @@ describe("<PasswordConfirm /> rendering", () => {
     const {container} = renderWithProviders(props);
     
     const passwordLabel = container.querySelector('.row.password label');
-    expect(passwordLabel.textContent).toBe(getTranslationString("PWD_LBL"));
+    expect(passwordLabel).toHaveTextContent(getTranslationString("PWD_LBL"));
     
     const passwordInput = container.querySelector('.row.password input');
     expect(passwordInput).toHaveAttribute("placeholder", getTranslationString("PWD_PHOLD"));
@@ -160,7 +160,7 @@ describe("<PasswordConfirm /> rendering", () => {
     const {container} = renderWithProviders(props);
     
     const confirmLabel = container.querySelector('.row.password-confirm label');
-    expect(confirmLabel.textContent).toBe(getTranslationString("CONFIRM_PWD_LBL"));
+    expect(confirmLabel).toHaveTextContent(getTranslationString("CONFIRM_PWD_LBL"));
     
     const confirmInput = container.querySelector('.row.password-confirm input');
     expect(confirmInput).toHaveAttribute("placeholder", getTranslationString("CONFIRM_PWD_PHOLD"));
@@ -303,17 +303,19 @@ describe("<PasswordConfirm /> interactions", () => {
   it("should toggle password visibility", async () => {
     const {container} = renderWithProviders(props);
 
+    let passwordInput;
+    let confirmInput;
     await waitFor(() => {
-      const passwordInput = container.querySelector('input#password');
-      const confirmInput = container.querySelector('input#password-confirm');
+      passwordInput = container.querySelector('input#password');
+      confirmInput = container.querySelector('input#password-confirm');
 
       expect(passwordInput).toBeInTheDocument();
       expect(confirmInput).toBeInTheDocument();
 
       // Initially should be password type
-      expect(passwordInput).toHaveAttribute('type', 'password');
-      expect(confirmInput).toHaveAttribute('type', 'password');
     });
+    expect(confirmInput).toHaveAttribute('type', 'password');
+    expect(passwordInput).toHaveAttribute('type', 'password');
 
     const passwordToggles = container.querySelectorAll('.password-toggle');
 

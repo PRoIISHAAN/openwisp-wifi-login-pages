@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
 import axios from "axios";
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
 import {toast} from "react-toastify";
@@ -9,6 +9,10 @@ import {cloneDeep} from "lodash";
 import {MemoryRouter, Route, Routes} from "react-router-dom";
 import {Provider} from "react-redux";
 import tick from "../../utils/tick";
+
+import getConfig from "../../utils/get-config";
+import Registration from "./registration";
+import redirectToPayment from "../../utils/redirect-to-payment";
 
 // Mock modules BEFORE importing
 const mockConfig = {
@@ -91,14 +95,10 @@ const mockConfig = {
 
 jest.mock("../../utils/get-config", () => ({
   __esModule: true,
-  default: jest.fn((slug, isTest) => mockConfig),
+  default: jest.fn(() => mockConfig),
 }));
 jest.mock("axios");
 jest.mock("../../utils/redirect-to-payment");
-
-import getConfig from "../../utils/get-config";
-import Registration from "./registration";
-import redirectToPayment from "../../utils/redirect-to-payment";
 
 const responseData = {
   key: "8a2b2b2dd963de23c17db30a227505f879866630",
@@ -157,8 +157,7 @@ const createMockStore = () => {
   };
 };
 
-const renderWithProviders = (component) => {
-  return render(
+const renderWithProviders = (component) => render(
     <Provider store={createMockStore()}>
       <MemoryRouter>
         <Routes>
@@ -167,7 +166,6 @@ const renderWithProviders = (component) => {
       </MemoryRouter>
     </Provider>
   );
-};
 
 const plans = [
   {
@@ -259,7 +257,7 @@ describe("test subscriptions", () => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
     // Re-setup the getConfig mock after clearing
-    getConfig.mockImplementation((slug, isTest) => mockConfig);
+    getConfig.mockImplementation(() => mockConfig);
   });
 
   it("should not show choice form when plans is absent", () => {
@@ -432,7 +430,7 @@ describe("test subscriptions", () => {
     // Use mockImplementation to handle multiple calls persistently
     let callCount = 0;
     axios.mockImplementation(() => {
-      callCount++;
+      callCount += 1;
       if (callCount === 1) {
         return Promise.resolve({
           status: 201,
@@ -650,7 +648,7 @@ describe("test subscriptions", () => {
       }),
     );
 
-    const {container, rerender} = renderWithProviders(<Registration {...props} loading={true} />);
+    const {rerender} = renderWithProviders(<Registration {...props} loading />);
 
     await tick();
 

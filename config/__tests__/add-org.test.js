@@ -85,6 +85,7 @@ describe("add-org command", () => {
   it("creates config via interactive prompts using expect for TTY", () => {
     // Use 'expect' command to provide a pseudo-TTY for inquirer
     // This allows us to actually test the interactive flow
+    // eslint-disable-next-line global-require
     const {execSync} = require("child_process");
 
     // Create an expect script that automates the interactive prompts
@@ -141,7 +142,7 @@ expect eof
 
     try {
       // Run the expect script
-      const result = execSync(`expect ${expectFile}`, {
+      execSync(`expect ${expectFile}`, {
         encoding: "utf-8",
         timeout: 30000,
         cwd: process.cwd(),
