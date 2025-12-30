@@ -1,7 +1,13 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
-import {BrowserRouter as Router, MemoryRouter} from "react-router-dom";
+import {MemoryRouter} from "react-router-dom";
+
+import getConfig from "../../utils/get-config";
+import loadTranslation from "../../utils/load-translation";
+import isInternalLink from "../../utils/check-internal-links";
+import Header from "./header";
+import {mapDispatchToProps} from "./index";
 
 // Mock modules BEFORE importing
 jest.mock("../../utils/get-config", () => ({
@@ -20,12 +26,6 @@ jest.mock("../../utils/get-config", () => ({
 }));
 jest.mock("../../utils/load-translation");
 jest.mock("../../utils/check-internal-links");
-
-import getConfig from "../../utils/get-config";
-import loadTranslation from "../../utils/load-translation";
-import isInternalLink from "../../utils/check-internal-links";
-import Header from "./header";
-import {mapDispatchToProps} from "./index";
 
 const defaultConfig = getConfig("default", true);
 const headerLinks = [
@@ -120,7 +120,7 @@ describe("<Header /> rendering", () => {
         authenticated: true,
       },
     ];
-    const { container } = render(
+    render(
       <MemoryRouter>
         <Header {...props} />
       </MemoryRouter>

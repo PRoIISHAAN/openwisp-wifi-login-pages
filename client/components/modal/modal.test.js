@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
 import axios from "axios";
@@ -277,13 +277,13 @@ describe("<Modal /> interactions", () => {
     });
 
     // Modal should hide scrollbar when open
-    expect(document.body.style.overflow).toEqual("hidden");
+    expect(document.body).toHaveStyle({overflow:"hidden"});
 
     // Unmount to trigger cleanup
     unmount();
 
     // Scrollbar should be restored
-    expect(document.body.style.overflow).toEqual("auto");
+    expect(document.body).toHaveStyle({overflow:"auto"});
   });
 
   it("should close modal on backdrop click", async () => {

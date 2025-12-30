@@ -441,7 +441,7 @@ describe("password-toggle tests", () => {
         inputRef={inputRef}
         secondInputRef={secondInputRef}
         toggler={toggler}
-        hidePassword={true}
+        hidePassword
         parentClassName="password-toggle"
       />,
     );
@@ -487,7 +487,7 @@ describe("password-toggle tests", () => {
         inputRef={inputRef}
         secondInputRef={secondInputRef}
         toggler={toggler}
-        hidePassword={true}
+        hidePassword
       />,
     );
     expect(container1.querySelector('i.eye')).toBeInTheDocument();
@@ -849,7 +849,7 @@ describe("getPaymentStatusRedirectUrl tests", () => {
 
 describe("withRouteProps test", () => {
   it("should add route props to component", () => {
-    const Component = (props) => {
+    function Component(props) {
       // Create a serializable version of props for testing
       const serializableProps = {
         location: props.location,
@@ -858,7 +858,7 @@ describe("withRouteProps test", () => {
         props: props.props,
       };
       return <div data-testid="test-component">{JSON.stringify(serializableProps)}</div>;
-    };
+    }
     const ComponentWithRouteProps = withRouteProps(Component);
     const { container } = render(
       <MemoryRouter>

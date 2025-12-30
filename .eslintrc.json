@@ -42,6 +42,7 @@
           "**/*.test.js",
           "**/*test-utils.js",
           "**/jest.config.js",
+          "**/setupTests.js",
           "browser-test/utils.js"
         ]
       }
@@ -50,7 +51,17 @@
   "overrides": [
     {
       "files": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
-      "extends": ["plugin:testing-library/react", "plugin:jest-dom/recommended"]
+      "extends": ["plugin:testing-library/react", "plugin:jest-dom/recommended"],
+      "rules": {
+        "testing-library/no-container": "off",
+        "testing-library/no-node-access": "off",
+        "testing-library/prefer-screen-queries": "off",
+        "testing-library/render-result-naming-convention": "off",
+        "testing-library/no-render-in-lifecycle": "off",
+        "jest/no-conditional-expect": "off",
+        "react/prop-types": "off",
+        "react/destructuring-assignment": "off"
+      }
     }
   ]
 }

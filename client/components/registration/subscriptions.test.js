@@ -10,6 +10,10 @@ import {MemoryRouter, Route, Routes} from "react-router-dom";
 import {Provider} from "react-redux";
 import tick from "../../utils/tick";
 
+import getConfig from "../../utils/get-config";
+import Registration from "./registration";
+import redirectToPayment from "../../utils/redirect-to-payment";
+
 // Mock modules BEFORE importing
 const mockConfig = {
   name: "default name",
@@ -96,10 +100,6 @@ jest.mock("../../utils/get-config", () => ({
 jest.mock("axios");
 jest.mock("../../utils/redirect-to-payment");
 
-import getConfig from "../../utils/get-config";
-import Registration from "./registration";
-import redirectToPayment from "../../utils/redirect-to-payment";
-
 const responseData = {
   key: "8a2b2b2dd963de23c17db30a227505f879866630",
   radius_user_token: "Lbdh3GKD7hvXUS5NUu5yoE4x5fCPPqlsXo7Ug8ld",
@@ -157,8 +157,7 @@ const createMockStore = () => {
   };
 };
 
-const renderWithProviders = (component) => {
-  return render(
+const renderWithProviders = (component) => render(
     <Provider store={createMockStore()}>
       <MemoryRouter>
         <Routes>
@@ -167,7 +166,6 @@ const renderWithProviders = (component) => {
       </MemoryRouter>
     </Provider>
   );
-};
 
 const plans = [
   {
@@ -648,7 +646,7 @@ describe("test subscriptions", () => {
       }),
     );
 
-    const {container, rerender} = renderWithProviders(<Registration {...props} loading={true} />);
+    const {container, rerender} = renderWithProviders(<Registration {...props} loading />);
 
     await tick();
 

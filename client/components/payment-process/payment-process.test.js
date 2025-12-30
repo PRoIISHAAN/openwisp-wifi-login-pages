@@ -6,11 +6,18 @@ import {MemoryRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 import {Cookies} from "react-cookie";
 
+import getConfig from "../../utils/get-config";
+import PaymentProcess from "./payment-process";
+import tick from "../../utils/tick";
+import validateToken from "../../utils/validate-token";
+import loadTranslation from "../../utils/load-translation";
+import getPaymentStatusRedirectUrl from "../../utils/get-payment-status";
+
 // Mock modules BEFORE importing
 jest.mock("axios");
 jest.mock("../../utils/get-config", () => ({
   __esModule: true,
-  default: jest.fn((slug, isTest) => ({
+  default: jest.fn(() => ({
     components: {
       payment_status_page: {
         content: {en: "Payment processing..."},
@@ -22,13 +29,6 @@ jest.mock("../../utils/validate-token");
 jest.mock("../../utils/load-translation");
 jest.mock("../../utils/history");
 jest.mock("../../utils/get-payment-status");
-
-import getConfig from "../../utils/get-config";
-import PaymentProcess from "./payment-process";
-import tick from "../../utils/tick";
-import validateToken from "../../utils/validate-token";
-import loadTranslation from "../../utils/load-translation";
-import getPaymentStatusRedirectUrl from "../../utils/get-payment-status";
 
 const defaultConfig = getConfig("default", true);
 const createTestProps = (props) => ({
@@ -72,15 +72,13 @@ const createMockStore = () => {
   };
 };
 
-const renderWithProviders = (component) => {
-  return render(
+const renderWithProviders = (component) => render(
     <Provider store={createMockStore()}>
       <MemoryRouter>
         {component}
       </MemoryRouter>
     </Provider>
   );
-};
 
 const responseData = {
   response_code: "AUTH_TOKEN_VALIDATION_SUCCESSFUL",

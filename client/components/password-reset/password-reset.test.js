@@ -7,11 +7,17 @@ import {toast} from "react-toastify";
 import {MemoryRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 
+import getConfig from "../../utils/get-config";
+import loadTranslation from "../../utils/load-translation";
+import PasswordReset from "./password-reset";
+import translation from "../../test-translation.json";
+import tick from "../../utils/tick";
+
 // Mock modules BEFORE importing
 jest.mock("axios");
 jest.mock("../../utils/get-config", () => ({
   __esModule: true,
-  default: jest.fn((slug, isTest) => ({
+  default: jest.fn(() => ({
     components: {
       password_reset_form: {
         input_fields: {
@@ -22,12 +28,6 @@ jest.mock("../../utils/get-config", () => ({
   })),
 }));
 jest.mock("../../utils/load-translation");
-
-import getConfig from "../../utils/get-config";
-import loadTranslation from "../../utils/load-translation";
-import PasswordReset from "./password-reset";
-import translation from "../../test-translation.json";
-import tick from "../../utils/tick";
 
 const defaultConfig = getConfig("default", true);
 const createTestProps = (props) => ({
@@ -74,15 +74,13 @@ const createMockStore = () => {
   };
 };
 
-const renderWithProviders = (component) => {
-  return render(
+const renderWithProviders = (component) => render(
     <Provider store={createMockStore()}>
       <MemoryRouter>
         {component}
       </MemoryRouter>
     </Provider>
   );
-};
 
 describe("<PasswordReset /> rendering with placeholder translation tags", () => {
   const props = createTestProps();
@@ -124,7 +122,7 @@ describe("<PasswordReset /> rendering", () => {
     const emailInput = container.querySelector("input[type='text']");
     const label = container.querySelector('.row label');
     
-    expect(label.textContent).toBe(getTranslationString("USERNAME_LOG_LBL"));
+    expect(label).toHaveTextContent(getTranslationString("USERNAME_LOG_LBL"));
     expect(emailInput).toHaveAttribute("placeholder", getTranslationString("USERNAME_LOG_PHOLD"));
     expect(emailInput).toHaveAttribute("title", getTranslationString("USERNAME_LOG_TITL"));
     expect(emailInput).toHaveAttribute("type", "text");

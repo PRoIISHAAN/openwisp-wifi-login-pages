@@ -1,7 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import PropTypes from "prop-types";
 import React from "react";
 import {MemoryRouter} from "react-router-dom";
 import * as toastify from "react-toastify";

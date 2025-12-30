@@ -7,7 +7,13 @@ import * as dependency from "react-toastify";
 import {Provider} from "react-redux";
 import {BrowserRouter as Router, Route, Routes, MemoryRouter} from "react-router-dom";
 import {createMemoryHistory} from "history";
-import {loadingContextValue} from "../../utils/loading-context";
+
+import getConfig from "../../utils/get-config";
+import loadTranslation from "../../utils/load-translation";
+import Login from "./login";
+import getParameterByName from "../../utils/get-parameter-by-name";
+import {mapStateToProps, mapDispatchToProps} from "./index";
+import redirectToPayment from "../../utils/redirect-to-payment";
 
 // Mock modules BEFORE importing
 const mockConfig = {
@@ -76,18 +82,11 @@ const mockConfig = {
 jest.mock("axios");
 jest.mock("../../utils/get-config", () => ({
   __esModule: true,
-  default: jest.fn((slug, isTest) => mockConfig),
+  default: jest.fn(() => mockConfig),
 }));
 jest.mock("../../utils/get-parameter-by-name");
 jest.mock("../../utils/load-translation");
 jest.mock("../../utils/redirect-to-payment");
-
-import getConfig from "../../utils/get-config";
-import loadTranslation from "../../utils/load-translation";
-import Login from "./login";
-import getParameterByName from "../../utils/get-parameter-by-name";
-import {mapStateToProps, mapDispatchToProps} from "./index";
-import redirectToPayment from "../../utils/redirect-to-payment";
 
 const defaultConfig = getConfig("default", true);
 const loginForm = defaultConfig.components.login_form;
@@ -492,13 +491,13 @@ describe("<Login /> interactions", () => {
     // Wait for async operations
     await waitFor(() => {
       expect(props.setUserData).toHaveBeenCalledTimes(1);
-      expect(props.setUserData).toHaveBeenCalledWith({
+      expect(props.authenticate).toHaveBeenCalledTimes(1);
+    });
+    expect(props.authenticate).toHaveBeenCalledWith(true);
+    expect(props.setUserData).toHaveBeenCalledWith({
         ...testUserData, 
         mustLogin: true
-      });
-      expect(props.authenticate).toHaveBeenCalledTimes(1);
-      expect(props.authenticate).toHaveBeenCalledWith(true);
-    });
+      });;
   });
 
   it("should authenticate normally with method bank_card", async () => {
@@ -545,10 +544,10 @@ describe("<Login /> interactions", () => {
     // Wait for async operations
     await waitFor(() => {
       expect(props.setUserData).toHaveBeenCalledTimes(1);
-      expect(props.setUserData).toHaveBeenCalledWith({...data, mustLogin: true});
       expect(props.authenticate).toHaveBeenCalledTimes(1);
-      expect(props.authenticate).toHaveBeenCalledWith(true);
     });
+    expect(props.authenticate).toHaveBeenCalledWith(true);
+    expect(props.setUserData).toHaveBeenCalledWith({...data, mustLogin: true});;
   });
 
   it("should redirect to payment status if bank_card and not verified", async () => {
@@ -656,7 +655,6 @@ describe("<Login /> interactions", () => {
     await waitFor(() => {
       expect(props.authenticate).not.toHaveBeenCalled();
       expect(props.setUserData).toHaveBeenCalledTimes(1);
-      expect(props.setUserData).toHaveBeenCalledWith(data);
       
       // Check no form errors are shown in the UI
       expect(container.querySelectorAll("div.error")).toHaveLength(0);
@@ -664,6 +662,7 @@ describe("<Login /> interactions", () => {
       
       expect(spyToast).toHaveBeenCalled();
     });
+    expect(props.setUserData).toHaveBeenCalledWith(data);;
   });
 
   it("should store token in sessionStorage when remember me is unchecked and rememberMe in localstorage", async () => {
@@ -739,8 +738,8 @@ describe("<Login /> interactions", () => {
       expect(props.authenticate).not.toHaveBeenCalled();
       expect(lastConsoleOutuput).not.toBe(null);
       expect(errorMethod).toHaveBeenCalled();
-      expect(errorMethod).toHaveBeenCalledWith("Internal server error");
     });
+    expect(errorMethod).toHaveBeenCalledWith("Internal server error");;
   });
 
   it("should show error toast when connection refused or timeout", async () => {
@@ -767,8 +766,8 @@ describe("<Login /> interactions", () => {
       expect(props.authenticate).not.toHaveBeenCalled();
       expect(lastConsoleOutuput).not.toBe(null);
       expect(errorMethod).toHaveBeenCalled();
-      expect(errorMethod).toHaveBeenCalledWith("Login error occurred.");
     });
+    expect(errorMethod).toHaveBeenCalledWith("Login error occurred.");;
   });
 
   it("should set mustLogin on login success", async () => {
@@ -800,8 +799,8 @@ describe("<Login /> interactions", () => {
     
     await waitFor(() => {
       expect(props.setUserData).toHaveBeenCalledTimes(1);
-      expect(props.setUserData).toHaveBeenCalledWith({...userData, mustLogin: true});
     });
+    expect(props.setUserData).toHaveBeenCalledWith({...userData, mustLogin: true});;
   });
 
   it("should call setTitle to set log in title", () => {
@@ -959,7 +958,7 @@ describe("<Login /> interactions", () => {
 
   it("should submit form if radius_realms is true", async () => {
     // First render - no captive portal form
-    let result = mountComponent(props);
+    const result = mountComponent(props);
     expect(result.container.querySelector("[id='cp-login-form']")).toBeNull();
     result.unmount();
     
@@ -987,7 +986,7 @@ describe("<Login /> interactions", () => {
     
     const zoneInput = cpForm.querySelector('input[name="zone"]');
     expect(zoneInput).toHaveAttribute('type', 'hidden');
-    expect(zoneInput).toHaveAttribute('value', 'zone_value');
+    expect(zoneInput).toHaveValue('zone_value');
     
     // Fill in the visible login form fields
     const visibleUsernameInput = container.querySelector('#username');

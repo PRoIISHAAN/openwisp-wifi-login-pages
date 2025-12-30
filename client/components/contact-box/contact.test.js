@@ -1,6 +1,10 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
+
+import getConfig from "../../utils/get-config";
+import loadTranslation from "../../utils/load-translation";
+import Contact from "./contact";
 
 // Mock modules BEFORE importing
 jest.mock("../../utils/get-config", () => ({
@@ -14,10 +18,6 @@ jest.mock("../../utils/get-config", () => ({
   })),
 }));
 jest.mock("../../utils/load-translation");
-
-import getConfig from "../../utils/get-config";
-import loadTranslation from "../../utils/load-translation";
-import Contact from "./contact";
 
 const defaultConfig = getConfig("default", true);
 const links = [

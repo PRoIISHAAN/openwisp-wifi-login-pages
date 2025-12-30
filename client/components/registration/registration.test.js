@@ -10,6 +10,11 @@ import {Provider} from "react-redux";
 import {t} from "ttag";
 import tick from "../../utils/tick";
 
+import getConfig from "../../utils/get-config";
+import loadTranslation from "../../utils/load-translation";
+import Registration from "./registration";
+import submitOnEnter from "../../utils/submit-on-enter";
+
 // Mock modules BEFORE importing
 const mockConfig = {
   name: "default name",
@@ -82,17 +87,12 @@ const mockConfig = {
 
 jest.mock("../../utils/get-config", () => ({
   __esModule: true,
-  default: jest.fn((slug, isTest) => mockConfig),
+  default: jest.fn(() => mockConfig),
 }));
 jest.mock("../../utils/load-translation");
 jest.mock("../../utils/submit-on-enter");
 jest.mock("../../utils/history");
 jest.mock("axios");
-
-import getConfig from "../../utils/get-config";
-import loadTranslation from "../../utils/load-translation";
-import Registration from "./registration";
-import submitOnEnter from "../../utils/submit-on-enter";
 
 const createTestProps = (props, configName = "default") => {
   const config = getConfig(configName);
@@ -145,15 +145,13 @@ const createMockStore = () => {
   };
 };
 
-const renderWithProviders = (component) => {
-  return render(
+const renderWithProviders = (component) => render(
     <Provider store={createMockStore()}>
       <MemoryRouter>
         {component}
       </MemoryRouter>
     </Provider>
   );
-};
 
 const responseData = {
   key: "8a2b2b2dd963de23c17db30a227505f879866630",
@@ -387,8 +385,8 @@ describe("<Registration /> interactions", () => {
     const firstNameLabel = container.querySelector("[for='first_name']");
     const locationLabel = container.querySelector("[for='location']");
     
-    expect(firstNameLabel.textContent).toEqual("First name (optional)");
-    expect(locationLabel.textContent).toEqual("Location (optional)");
+    expect(firstNameLabel).toHaveTextContent("First name (optional)");
+    expect(locationLabel).toHaveTextContent("Location (optional)");
     expect(container.querySelector('.last_name')).not.toBeInTheDocument();
     expect(container.querySelector('.birth_date')).not.toBeInTheDocument();
   });
@@ -401,10 +399,10 @@ describe("<Registration /> interactions", () => {
     
     const {container} = renderWithProviders(<Registration {...props} />);
     
-    expect(container.querySelector("[for='first_name']").textContent).toEqual("First name");
-    expect(container.querySelector("[for='birth_date']").textContent).toEqual("Birth date");
-    expect(container.querySelector("[for='last_name']").textContent).toEqual("Last name (optional)");
-    expect(container.querySelector("[for='location']").textContent).toEqual("Location (optional)");
+    expect(container.querySelector("[for='first_name']")).toHaveTextContent("First name");
+    expect(container.querySelector("[for='birth_date']")).toHaveTextContent("Birth date");
+    expect(container.querySelector("[for='last_name']")).toHaveTextContent("Last name (optional)");
+    expect(container.querySelector("[for='location']")).toHaveTextContent("Location (optional)");
   });
 
   it("should execute authenticate in mobile phone verification flow", async () => {

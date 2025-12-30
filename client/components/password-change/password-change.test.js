@@ -9,6 +9,13 @@ import {MemoryRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 import {t} from "ttag";
 
+import getConfig from "../../utils/get-config";
+import logError from "../../utils/log-error";
+import tick from "../../utils/tick";
+import loadTranslation from "../../utils/load-translation";
+import PasswordChange from "./password-change";
+import validateToken from "../../utils/validate-token";
+
 // Mock modules BEFORE importing
 jest.mock("axios");
 jest.mock("../../utils/get-config", () => ({
@@ -34,13 +41,6 @@ jest.mock("../../utils/log-error");
 jest.mock("../../utils/load-translation");
 jest.mock("../../utils/validate-token");
 jest.mock("../../utils/handle-logout");
-
-import getConfig from "../../utils/get-config";
-import logError from "../../utils/log-error";
-import tick from "../../utils/tick";
-import loadTranslation from "../../utils/load-translation";
-import PasswordChange from "./password-change";
-import validateToken from "../../utils/validate-token";
 
 logError.mockImplementation(jest.fn());
 
@@ -86,15 +86,13 @@ const createMockStore = () => {
   };
 };
 
-const renderWithProviders = (component) => {
-  return render(
+const renderWithProviders = (component) => render(
     <Provider store={createMockStore()}>
       <MemoryRouter>
         {component}
       </MemoryRouter>
     </Provider>
   );
-};
 
 describe("<PasswordChange /> rendering with placeholder translation tags", () => {
   const props = createTestProps();

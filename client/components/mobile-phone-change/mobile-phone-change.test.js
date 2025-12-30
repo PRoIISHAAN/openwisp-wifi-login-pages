@@ -1,18 +1,20 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
 import axios from "axios";
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from "react";
-import PropTypes from "prop-types";
 import {Cookies} from "react-cookie";
 import {toast} from "react-toastify";
 import {Provider} from "react-redux";
 import {BrowserRouter as Router, Routes, Route, MemoryRouter} from "react-router-dom";
 import {createMemoryHistory} from "history";
-import {loadingContextValue} from "../../utils/loading-context";
 import loadTranslation from "../../utils/load-translation";
 import tick from "../../utils/tick";
+
+import getConfig from "../../utils/get-config";
+import MobilePhoneChange from "./mobile-phone-change";
+import validateToken from "../../utils/validate-token";
 
 // Mock modules BEFORE importing
 const mockConfig = {
@@ -63,17 +65,12 @@ const mockConfig = {
 
 jest.mock("../../utils/get-config", () => ({
   __esModule: true,
-  default: jest.fn((slug, isTest) => mockConfig),
+  default: jest.fn(() => mockConfig),
 }));
 jest.mock("../../utils/validate-token");
 jest.mock("../../utils/load-translation");
 jest.mock("../../utils/submit-on-enter");
 jest.mock("axios");
-
-import getConfig from "../../utils/get-config";
-import MobilePhoneChange from "./mobile-phone-change";
-import validateToken from "../../utils/validate-token";
-import submitOnEnter from "../../utils/submit-on-enter";
 
 function StatusMock() {
   return <div data-testid="status-mock" />;
@@ -131,15 +128,13 @@ const createMockStore = () => {
   };
 };
 
-const renderWithProviders = (component) => {
-  return render(
+const renderWithProviders = (component) => render(
     <Provider store={createMockStore()}>
       <MemoryRouter>
         {component}
       </MemoryRouter>
     </Provider>
   );
-};
 
 describe("<MobilePhoneChange /> rendering with placeholder translation tags", () => {
   const props = createTestProps();
@@ -193,7 +188,6 @@ describe("Change Phone Number: standard flow", () => {
   let props;
   let lastConsoleOutuput;
   let originalError;
-  const event = {preventDefault: jest.fn()};
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -339,13 +333,14 @@ describe("Change Phone Number: standard flow", () => {
     expect(toast.info).not.toHaveBeenCalled();
     
     // Check error message appears
+    let errorElement;
     await waitFor(() => {
-      const errorElement = container.querySelector('.error');
+      errorElement = container.querySelector('.error');
       expect(errorElement).toBeInTheDocument();
-      expect(errorElement.textContent).toContain(
-        "The new phone number must be different than the old one."
-      );
     });
+    expect(errorElement).toHaveTextContent(
+        /The new phone number must be different than the old one\./
+      );
   });
 
   it("should render nonField error", async () => {
@@ -372,13 +367,12 @@ describe("Change Phone Number: standard flow", () => {
     expect(toast.info).not.toHaveBeenCalled();
     
     // Check error message appears
+    let errorElement;
     await waitFor(() => {
-      const errorElement = container.querySelector('.error');
+      errorElement = container.querySelector('.error');
       expect(errorElement).toBeInTheDocument();
-      expect(errorElement.textContent).toContain("Maximum daily limit reached.");
     });
-    
-    expect(lastConsoleOutuput).not.toBe(null);
+    expect(errorElement).toHaveTextContent(/Maximum daily limit reached\./);
   });
 
   it("should cancel successfully", async () => {

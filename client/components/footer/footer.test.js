@@ -75,8 +75,8 @@ describe("<Footer /> rendering", () => {
     };
     props = createTestProps(links);
     const { container } = render(<Footer {...props} />);
-    const footerLinks = container.querySelectorAll(".footer-link");
-    expect(footerLinks).toHaveLength(0);
+    const footerLinkElements = container.querySelectorAll(".footer-link");
+    expect(footerLinkElements).toHaveLength(0);
   });
 
   it("should render after html", () => {
