@@ -105,6 +105,40 @@ const prompts = [
   },
   {
     type: "confirm",
+    name: "captive_portal_api_enabled",
+    message: "Do you want to enable captive portal API detection (RFC 8908)?",
+    default: false,
+  },
+  {
+    type: "input",
+    name: "captive_portal_api_url",
+    default: "http://localhost:8000/captive-portal-mock/status/",
+    when: (answers) => answers.captive_portal_api_enabled,
+    message: "What is the captive portal API URL?",
+    validate: (value) => {
+      if (/.+/.test(value)) {
+        return true;
+      }
+      return "The captive portal API URL is required";
+    },
+  },
+  {
+    type: "input",
+    name: "captive_portal_api_timeout",
+    default: 2,
+    when: (answers) => answers.captive_portal_api_enabled,
+    message: "What timeout (in seconds) should be used for captive portal API checks?",
+    validate: (value) => {
+      const timeout = Number(value);
+      if (Number.isFinite(timeout) && timeout > 0) {
+        return true;
+      }
+      return "Timeout must be a positive number";
+    },
+    filter: (value) => Number(value),
+  },
+  {
+    type: "confirm",
     name: "logout_by_session_ID",
     message: "Does your captive portal support log out by session ID?",
     default: false,
@@ -219,6 +253,8 @@ const createConfiguration = async (response) => {
 
 const createConfigurationWithPrompts = async () => {
   const response = await prompt(prompts);
+  response.captive_portal_api_url = response.captive_portal_api_url || null;
+  response.captive_portal_api_timeout = response.captive_portal_api_timeout || 2;
   createConfiguration(response);
 };
 
@@ -239,6 +275,15 @@ const createConfigurationWithoutPrompts = (passedData) => {
   ];
   try {
     const response = JSON.parse(passedData);
+    if (!Object.prototype.hasOwnProperty.call(response, "captive_portal_api_enabled")) {
+      response.captive_portal_api_enabled = false;
+    }
+    if (!Object.prototype.hasOwnProperty.call(response, "captive_portal_api_url")) {
+      response.captive_portal_api_url = null;
+    }
+    if (!Object.prototype.hasOwnProperty.call(response, "captive_portal_api_timeout")) {
+      response.captive_portal_api_timeout = 2;
+    }
     const missingKeys = requiredKeys.filter(
       // eslint-disable-next-line no-prototype-builtins
       (key) => !response.hasOwnProperty(key),

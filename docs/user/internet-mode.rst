@@ -8,6 +8,12 @@ the captive portal, which is usually inaccessible from the public
 internet. If your infrastructure has such a configuration then, follow the
 below instructions to avoid hanging of authentication flow.
 
+If your captive portal supports RFC 8908, you can also configure
+``captive_portal_api`` in organization settings to detect internet mode
+directly. This check is optional and non-blocking: when unavailable,
+WiFi Login Pages continues using the postMessage-based fallback documented
+below.
+
 Create a small web application which can serve the endpoints entered in
 ``captive_portal_login_form.action`` and
 ``captive_portal_logout_form.action`` of organization configuration.

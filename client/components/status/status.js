@@ -37,6 +37,7 @@ import {localStorage} from "../../utils/storage";
 import handleSession from "../../utils/session";
 import getPlanSelection from "../../utils/get-plan-selection";
 import getPlans from "../../utils/get-plans";
+import getCaptivePortalLoginRequired from "../../utils/get-captive-portal-login-required";
 
 export default class Status extends React.Component {
   constructor(props) {
@@ -212,6 +213,11 @@ export default class Status extends React.Component {
       }
 
       let shouldLogin = mustLogin;
+      const captivePortalLoginRequired =
+        await this.getCaptivePortalLoginRequired();
+      if (captivePortalLoginRequired === false) {
+        shouldLogin = false;
+      }
       if (method === "bank_card" && isVerified === false) {
         shouldLogin = shouldLogin && settings.payment_requires_internet;
       }
@@ -785,6 +791,17 @@ export default class Status extends React.Component {
         // Unknown message type, do nothing
         break;
     }
+  };
+
+  getCaptivePortalLoginRequired = async () => {
+    const {captivePortalApi, setInternetMode} = this.props;
+    const captivePortalLoginRequired = await getCaptivePortalLoginRequired(
+      captivePortalApi,
+    );
+    if (captivePortalLoginRequired === false) {
+      setInternetMode(true);
+    }
+    return captivePortalLoginRequired;
   };
 
   // eslint-disable-next-line class-methods-use-this
@@ -1490,6 +1507,11 @@ Status.defaultProps = {
   isAuthenticated: false,
   internetMode: false,
   planExhausted: false,
+  captivePortalApi: {
+    enabled: false,
+    timeout: 2,
+    url: null,
+  },
 };
 Status.propTypes = {
   statusPage: PropTypes.shape({
@@ -1513,6 +1535,11 @@ Status.propTypes = {
   cookies: PropTypes.instanceOf(Cookies).isRequired,
   logout: PropTypes.func.isRequired,
   captivePortalSyncAuth: PropTypes.bool.isRequired,
+  captivePortalApi: PropTypes.shape({
+    enabled: PropTypes.bool,
+    timeout: PropTypes.number,
+    url: PropTypes.string,
+  }),
   captivePortalLoginForm: PropTypes.shape({
     method: PropTypes.string,
     action: PropTypes.string,

@@ -12,6 +12,7 @@ import logError from "../../utils/log-error";
 import tick from "../../utils/tick";
 import Status from "./status";
 import validateToken from "../../utils/validate-token";
+import getCaptivePortalLoginRequired from "../../utils/get-captive-portal-login-required";
 import {initialState} from "../../reducers/organization";
 import Modal from "../../utils/modal";
 import {mapStateToProps, mapDispatchToProps} from "./index";
@@ -21,6 +22,7 @@ jest.mock("../../utils/get-config");
 jest.mock("../../utils/load-translation");
 jest.mock("../../utils/log-error");
 jest.mock("../../utils/validate-token");
+jest.mock("../../utils/get-captive-portal-login-required");
 jest.mock("../../utils/history");
 logError.mockImplementation(jest.fn());
 
@@ -70,6 +72,11 @@ const createTestProps = (props) => ({
     ...defaultConfig.components.captive_portal_logout_form,
   },
   captivePortalSyncAuth: false,
+  captivePortalApi: {
+    enabled: false,
+    url: null,
+    timeout: 2,
+  },
   location: {
     search: "?macaddr=4e:ed:11:2b:17:ae",
   },
@@ -156,6 +163,9 @@ describe("<Status /> rendering", () => {
       organization: {
         configuration: defaultConfig,
       },
+      language: "en",
+      internetMode: false,
+      planExhausted: false,
     };
     const ownProps = {
       cookies: new Cookies(),
@@ -171,10 +181,13 @@ describe("<Status /> rendering", () => {
         defaultConfig.components.captive_portal_login_form,
       captivePortalLogoutForm:
         defaultConfig.components.captive_portal_logout_form,
-      captivePortalSyncAuth: defaultConfig.captive_portal_sync_auth,
+      captivePortalSyncAuth: defaultConfig.components.captive_portal_sync_auth,
+      captivePortalApi: defaultConfig.components.captive_portal_api,
       isAuthenticated: defaultConfig.isAuthenticated,
       cookies: ownProps.cookies,
-      language: defaultConfig.language,
+      language: "en",
+      internetMode: false,
+      planExhausted: false,
       defaultLanguage: defaultConfig.default_language,
     });
     const dispatch = jest.fn();
@@ -224,7 +237,15 @@ describe("<Status /> interactions", () => {
             status: 200,
             statusText: "OK",
           },
-          data: [],
+          data: [
+            {
+              session_id: 1,
+              start_time: "2020-09-08T00:22:28-04:00",
+              stop_time: "2020-09-08T00:22:29-04:00",
+              input_octets: 100000,
+              output_octets: 100000,
+            },
+          ],
           headers: {},
         }),
       )
@@ -648,6 +669,63 @@ describe("<Status /> interactions", () => {
     expect(props.setInternetMode).toHaveBeenCalledTimes(1);
   });
 
+  it("should skip captive portal API detection when feature is disabled", async () => {
+    getCaptivePortalLoginRequired.mockResolvedValueOnce(null);
+    props = createTestProps();
+    wrapper = shallow(<Status {...props} />, {
+      context: {setLoading: jest.fn()},
+      disableLifecycleMethods: true,
+    });
+
+    const result = await wrapper.instance().getCaptivePortalLoginRequired();
+
+    expect(result).toBe(null);
+    expect(getCaptivePortalLoginRequired).toHaveBeenCalledWith(
+      props.captivePortalApi,
+    );
+    expect(props.setInternetMode).not.toHaveBeenCalled();
+  });
+
+  it("should enable internet mode when captive portal API returns captive false", async () => {
+    getCaptivePortalLoginRequired.mockResolvedValueOnce(false);
+    props = createTestProps({
+      captivePortalApi: {
+        enabled: true,
+        url: "https://portal.example.com/.well-known/captive-portal",
+        timeout: 2,
+      },
+    });
+    wrapper = shallow(<Status {...props} />, {
+      context: {setLoading: jest.fn()},
+      disableLifecycleMethods: true,
+    });
+
+    const result = await wrapper.instance().getCaptivePortalLoginRequired();
+
+    expect(result).toBe(false);
+    expect(props.setInternetMode).toHaveBeenCalledTimes(1);
+  });
+
+  it("should keep captive portal flow when API returns captive true", async () => {
+    getCaptivePortalLoginRequired.mockResolvedValueOnce(true);
+    props = createTestProps({
+      captivePortalApi: {
+        enabled: true,
+        url: "https://portal.example.com/.well-known/captive-portal",
+        timeout: 2,
+      },
+    });
+    wrapper = shallow(<Status {...props} />, {
+      context: {setLoading: jest.fn()},
+      disableLifecycleMethods: true,
+    });
+
+    const result = await wrapper.instance().getCaptivePortalLoginRequired();
+
+    expect(result).toBe(true);
+    expect(props.setInternetMode).not.toHaveBeenCalled();
+  });
+
   it("should not perform captive portal login (submit loginFormRef), if user is already authenticated", async () => {
     validateToken.mockReturnValue(true);
     props = createTestProps();
@@ -926,8 +1004,21 @@ describe("<Status /> interactions", () => {
     status.logoutIframeRef.current = {submit: jest.fn()};
     jest.spyOn(status, "handleLogout");
     jest.spyOn(status, "handleLogoutIframe");
+    jest
+      .spyOn(status, "getUserActiveRadiusSessions")
+      .mockImplementation(async () => {
+        status.setState({
+          sessionsToLogout: [
+            {
+              session_id: 1,
+            },
+          ],
+        });
+      });
+    await tick();
     wrapper.find(".logout input.button").simulate("click", {});
     expect(status.handleLogout).toHaveBeenCalledTimes(1);
+    await tick();
     await tick();
     expect(logoutFormRef.mock.calls.length).toBe(1);
     // mustLogin is set to true in cookie and localStorage to prevent redirect loop

@@ -9,6 +9,8 @@ const configDir = path.resolve(__dirname, "../../organizations");
 const testOrgSlug = "testorg";
 const testOrgDir = path.join(configDir, testOrgSlug);
 const testOrgConfig = path.join(testOrgDir, `${testOrgSlug}.yml`);
+const testOrgCaptiveApiSlug = `${testOrgSlug}-cp-api`;
+const testOrgCaptiveApiDir = path.join(configDir, testOrgCaptiveApiSlug);
 
 const validData = {
   name: "Test Organization",
@@ -26,10 +28,21 @@ const validData = {
   assets_confirm: false,
 };
 
+const validDataWithCaptivePortalApi = {
+  ...validData,
+  slug: testOrgCaptiveApiSlug,
+  captive_portal_api_enabled: true,
+  captive_portal_api_url: "https://portal.example.com/.well-known/captive-portal",
+  captive_portal_api_timeout: 3,
+};
+
 describe("add-org command", () => {
   const cleanTestOrgDir = () => {
     if (fs.existsSync(testOrgDir)) {
       fs.rmSync(testOrgDir, {recursive: true, force: true});
+    }
+    if (fs.existsSync(testOrgCaptiveApiDir)) {
+      fs.rmSync(testOrgCaptiveApiDir, {recursive: true, force: true});
     }
   };
 
@@ -92,5 +105,31 @@ describe("add-org command", () => {
     expect(proc.stdout).toMatch(/What is the name of the organization/);
     // Should not create config file with empty input
     expect(fs.existsSync(testOrgConfig)).toBe(false);
+  });
+
+  it("creates captive portal api config with --noprompt when provided", () => {
+    const orgSlug = validDataWithCaptivePortalApi.slug;
+    const orgDir = path.join(configDir, orgSlug);
+    const orgConfig = path.join(orgDir, `${orgSlug}.yml`);
+    if (fs.existsSync(orgDir)) {
+      fs.rmSync(orgDir, {recursive: true, force: true});
+    }
+
+    const result = spawnSync(
+      "yarn",
+      ["add-org", "--noprompt", JSON.stringify(validDataWithCaptivePortalApi)],
+      {encoding: "utf-8"},
+    );
+
+    expect(result.status).toBe(0);
+    expect(fs.existsSync(orgConfig)).toBe(true);
+    const config = yaml.load(fs.readFileSync(orgConfig, "utf8"));
+    expect(config.client.components.captive_portal_api).toEqual({
+      enabled: true,
+      url: "https://portal.example.com/.well-known/captive-portal",
+      timeout: 3,
+    });
+
+    fs.rmSync(orgDir, {recursive: true, force: true});
   });
 });

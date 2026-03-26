@@ -249,6 +249,11 @@ client:
       message: true
       homepage_link: true
 
+    captive_portal_api:
+      enabled: {{captive_portal_api_enabled}}
+      url: {{#if captive_portal_api_enabled}}{{captive_portal_api_url}}{{else}}null{{/if}}
+      timeout: {{captive_portal_api_timeout}}
+
     captive_portal_login_form:
       method: post
       action: {{login_action_url}}

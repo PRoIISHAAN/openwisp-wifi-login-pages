@@ -124,6 +124,33 @@ browsers may fail to detect successful login when this method is used.
 Set ``captive_portal_sync_auth`` to ``true`` to submit the login form
 synchronously and trigger a full page reload upon authentication:
 
+``captive_portal_api``
+~~~~~~~~~~~~~~~~~~~~~~
+
+This optional configuration enables RFC 8908 captive portal API detection.
+When enabled, WiFi Login Pages sends a ``GET`` request to the configured URL
+with ``Accept: application/captive+json, application/json`` and expects a
+response containing ``{"captive": <boolean>}``.
+
+- **Type**: ``object``
+- **Default**:
+
+.. code-block:: yaml
+
+    captive_portal_api:
+      enabled: false
+      url: null
+      timeout: 2
+
+``enabled`` controls whether the check is executed.
+
+``url`` is the endpoint serving the captive portal API response.
+
+``timeout`` is the request timeout in seconds.
+
+If the API is disabled, missing, unreachable, invalid, or times out, WiFi Login
+Pages falls back to the existing captive portal workflow.
+
 Status Page Settings
 --------------------
 
