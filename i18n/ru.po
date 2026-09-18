@@ -560,6 +560,10 @@ msgstr "Подтвердите пароль"
 msgid "PWD_CONFIRM_ADD_TXT"
 msgstr "Введите новый пароль ещё раз"
 
+#: client/components/password-confirm/password-confirm.js:91
+msgid "INVALID_PWD_RESET_URL"
+msgstr "Недействительный URL для сброса пароля"
+
 #: client/components/password-confirm/password-confirm.js:205
 msgid "PWD_CONFIRM"
 msgstr "Подтвердите смену пароля"
@@ -729,3 +733,20 @@ msgstr "404 Страница не найдена.."
 #: client/components/404/404.js:37
 msgid "HOME_PG_LINK_TXT"
 msgstr "Вернись на первую страницу"
+
+#: client/components/complete-signup/complete-signup.js:77
+msgid "ORG_REGISTRATION_DISABLED"
+msgstr "Регистрация в настоящее время отключена для этой организации"
+
+#: client/components/complete-signup/complete-signup.js:92
+#: client/components/complete-signup/complete-signup.js:95
+msgid "PLANS_FETCH_ERR"
+msgstr "Не удалось загрузить планы"
+
+#: client/components/complete-signup/complete-signup.js:288
+msgid "REGISTRATION_COMPLETE_PROMPT"
+msgstr "Пожалуйста, завершите регистрацию в"
+
+#: client/components/complete-signup/complete-signup.js:300
+msgid "RETRY"
+msgstr "Повторить попытку"

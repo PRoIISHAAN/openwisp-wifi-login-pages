@@ -559,6 +559,10 @@ msgstr "Torne a impuestâ la password"
 msgid "PWD_CONFIRM_ADD_TXT"
 msgstr "Inserìs la password gnove achì."
 
+#: client/components/password-confirm/password-confirm.js:91
+msgid "INVALID_PWD_RESET_URL"
+msgstr "URL no valide par tornâ a impuestâ la password"
+
 #: client/components/password-confirm/password-confirm.js:205
 msgid "PWD_CONFIRM"
 msgstr "Conferme il cambi de password"
@@ -733,3 +737,20 @@ msgstr "O domandìn scuse, la pagjine cirude no je stade cjatade."
 #: client/components/404/404.js:37
 msgid "HOME_PG_LINK_TXT"
 msgstr "Torne ae prime pagjine"
+
+#: client/components/complete-signup/complete-signup.js:77
+msgid "ORG_REGISTRATION_DISABLED"
+msgstr "La registrazion e je disabilitade par cheste organizazion"
+
+#: client/components/complete-signup/complete-signup.js:92
+#: client/components/complete-signup/complete-signup.js:95
+msgid "PLANS_FETCH_ERR"
+msgstr "Nol è pussibil cjamâ i plans"
+
+#: client/components/complete-signup/complete-signup.js:288
+msgid "REGISTRATION_COMPLETE_PROMPT"
+msgstr "Par favôr, complete la vuestre registrazion a"
+
+#: client/components/complete-signup/complete-signup.js:300
+msgid "RETRY"
+msgstr "Torne"

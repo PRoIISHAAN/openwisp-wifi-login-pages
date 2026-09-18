@@ -562,6 +562,10 @@ msgstr "Reimposta password"
 msgid "PWD_CONFIRM_ADD_TXT"
 msgstr "Inserisci la nuova password di seguito."
 
+#: client/components/password-confirm/password-confirm.js:91
+msgid "INVALID_PWD_RESET_URL"
+msgstr "URL per reimpostare la password non valida"
+
 #: client/components/password-confirm/password-confirm.js:205
 msgid "PWD_CONFIRM"
 msgstr "Conferma cambio password"
@@ -737,3 +741,20 @@ msgstr "Ci scusiamo, la pagina cercata non è stata trovata."
 #: client/components/404/404.js:37
 msgid "HOME_PG_LINK_TXT"
 msgstr "Torna alla prima pagina"
+
+#: client/components/complete-signup/complete-signup.js:77
+msgid "ORG_REGISTRATION_DISABLED"
+msgstr "La registrazione è attualmente disabilitata per questa organizzazione"
+
+#: client/components/complete-signup/complete-signup.js:92
+#: client/components/complete-signup/complete-signup.js:95
+msgid "PLANS_FETCH_ERR"
+msgstr "Impossibile caricare i piani"
+
+#: client/components/complete-signup/complete-signup.js:288
+msgid "REGISTRATION_COMPLETE_PROMPT"
+msgstr "Si prega di completare la registrazione a"
+
+#: client/components/complete-signup/complete-signup.js:300
+msgid "RETRY"
+msgstr "Riprova"

@@ -10,7 +10,7 @@
     "organization": "default"
   },
   "mobileVerificationTestUser": {
-    "phoneNumber": "+911234567890",
+    "phoneNumber": "+393664351808",
     "password": "testuser",
     "organization": "mobile",
     "email": "testuser2@openwisp.org",
@@ -18,6 +18,14 @@
     "secretKey": "organization_secret_key",
     "method": "mobile_phone",
     "changePhoneNumber": "+393660011333"
+  },
+  "crossOrgPhoneVerificationUser": {
+    "email": "crossorg-phone@openwisp.org",
+    "password": "testuser",
+    "sourceOrganization": "default",
+    "targetOrganization": "mobile",
+    "phoneNumber": "+393664351809",
+    "method": "mobile_phone"
   },
   "allOrgScript": "analytics.js"
 }
