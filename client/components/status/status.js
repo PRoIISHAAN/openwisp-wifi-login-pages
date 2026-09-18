@@ -16,8 +16,6 @@ import {toast} from "react-toastify";
 import InfinteScroll from "react-infinite-scroll-component";
 import {t, gettext} from "ttag";
 import {filesize} from "filesize";
-import getLanguageHeaders from "../../utils/get-language-headers";
-import {timeFromSeconds} from "duration-formatter";
 
 import {
   getUserRadiusSessionsUrl,
