@@ -1253,11 +1253,10 @@ export default class Status extends React.Component {
   };
 
   // eslint-disable-next-line class-methods-use-this
-  getWarningMessage = (message) => 
+  getWarningMessage = (message) =>
     /* disable ttag */
-     gettext(message)
-    /* enable ttag */
-  ;
+    gettext(message);
+  /* enable ttag */
 
   // eslint-disable-next-line class-methods-use-this
   getUsageClass = (value, result) => {
