@@ -12,12 +12,12 @@ msgstr ""
 #: client/components/complete-signup/complete-signup.test.js:418
 #: client/components/login/login.js:244
 #: client/components/password-confirm/password-confirm.js:102
-#: client/components/status/status.js:369
-#: client/components/status/status.js:373
-#: client/components/status/status.js:443
-#: client/components/status/status.js:447
-#: client/components/status/status.js:452
-#: client/components/status/status.js:502
+#: client/components/status/status.js:401
+#: client/components/status/status.js:405
+#: client/components/status/status.js:475
+#: client/components/status/status.js:479
+#: client/components/status/status.js:484
+#: client/components/status/status.js:534
 #: client/utils/get-payment-status.js:67
 #: client/utils/get-plans.js:26
 #: client/utils/handle-logout.js:30
@@ -32,14 +32,14 @@ msgstr "Pojavila se je napaka!"
 msgid "PLAN_SETTING_TXT"
 msgstr "Izberite vrsto naročnine"
 
-#: client/components/status/status.js:547
+#: client/components/status/status.js:579
 #. Session for this MAC is no longer active on the NAS — log out from WLP.
 #. The "true" argument ensures the user can quickly sign in again.
 msgid "INACTIVE_SESSION_LOGOUT"
 msgstr "Seja Wi-Fi je bila končana. Znova se lahko prijavite in začnete novo sejo."
 
-#: client/components/status/status.js:555
-#: client/components/status/status.js:704
+#: client/components/status/status.js:587
+#: client/components/status/status.js:738
 #: client/utils/handle-logout.js:29
 msgid "LOGOUT_SUCCESS"
 msgstr "Odjava je bila uspešna"
@@ -70,67 +70,67 @@ msgstr "pogoje uporabe storitve"
 
 #: client/components/login/login.js:217
 #: client/components/payment-process/payment-process.js:28
-#: client/components/status/status.js:707
-#: client/components/status/status.js:722
+#: client/components/status/status.js:741
+#: client/components/status/status.js:756
 msgid "PLEASE_WAIT"
 msgstr "Prosim počakaj..."
 
 #: client/components/registration/registration.js:340
 #: client/components/registration/registration.test.js:418
-#: client/components/status/status.js:724
+#: client/components/status/status.js:758
 msgid "PLEASE_LOGIN"
 msgstr "Prosim prijavite se"
 
-#: client/components/status/status.js:943
-#: client/components/status/status.js:1140
+#: client/components/status/status.js:983
+#: client/components/status/status.js:1180
 msgid "ACCT_ACTIVE"
 msgstr "aktivna seja"
 
 #: client/components/logout/logout.js:24
 #: client/components/mobile-phone-verification/mobile-phone-verification.js:331
-#: client/components/status/status.js:963
-#: client/components/status/status.js:1051
-#: client/components/status/status.js:1055
-#: client/components/status/status.js:1636
+#: client/components/status/status.js:1003
+#: client/components/status/status.js:1091
+#: client/components/status/status.js:1095
+#: client/components/status/status.js:1601
 msgid "LOGOUT"
 msgstr "Odjava"
 
-#: client/components/status/status.js:1132
+#: client/components/status/status.js:1172
 #. eslint-disable-next-line class-methods-use-this
 msgid "ACCT_START_TIME"
 msgstr "Začetek povezave"
 
-#: client/components/status/status.js:1133
+#: client/components/status/status.js:1173
 #. eslint-disable-next-line class-methods-use-this
 msgid "ACCT_STOP_TIME"
 msgstr "Konec povezave"
 
-#: client/components/status/status.js:1134
+#: client/components/status/status.js:1174
 #. eslint-disable-next-line class-methods-use-this
 msgid "ACCT_DURATION"
 msgstr "Trajanje"
 
-#: client/components/status/status.js:1135
+#: client/components/status/status.js:1175
 #. eslint-disable-next-line class-methods-use-this
 msgid "ACCT_DOWNLOAD"
 msgstr "Prenos podatkov"
 
-#: client/components/status/status.js:1136
+#: client/components/status/status.js:1176
 #. eslint-disable-next-line class-methods-use-this
 msgid "ACCT_UPLOAD"
 msgstr "Nalaganje podatkov"
 
-#: client/components/status/status.js:1137
+#: client/components/status/status.js:1177
 #. eslint-disable-next-line class-methods-use-this
 msgid "ACCT_DEVICE_ADDRESS"
 msgstr "Naslov naprave"
 
-#: client/components/status/status.js:1147
+#: client/components/status/status.js:1187
 #. eslint-disable-next-line class-methods-use-this
 msgid "STATUS"
 msgstr "Status"
 
-#: client/components/status/status.js:1148
+#: client/components/status/status.js:1188
 #. eslint-disable-next-line class-methods-use-this
 msgid "LOGGED_IN"
 msgstr "Prijavljeni"
@@ -138,95 +138,84 @@ msgstr "Prijavljeni"
 #: client/components/contact-box/contact.js:25
 #: client/components/login/login.js:118
 #: client/components/registration/registration.js:476
-#: client/components/status/status.js:1151
+#: client/components/status/status.js:1191
 #. eslint-disable-next-line class-methods-use-this
 msgid "EMAIL"
 msgstr "E-naslov"
 
-#: client/components/status/status.js:1154
+#: client/components/status/status.js:1194
 #. eslint-disable-next-line class-methods-use-this
 msgid "USERNAME"
 msgstr "Uporabniško ime"
 
-#: client/components/status/status.js:1157
+#: client/components/status/status.js:1197
 #. eslint-disable-next-line class-methods-use-this
 msgid "PHONE_NUMBER"
 msgstr "Telefonska številka"
 
-#: client/components/status/status.js:1781
+#: client/components/status/status.js:1746
 msgid "CP_LOGIN"
 msgstr "Začenjamo vašo sejo v storitvi WiFi, lahko traja nekaj sekund, počakajte ..."
 
-#: client/components/status/status.js:109
+#: client/components/status/status.js:141
 msgid "STATUS_TITL"
 msgstr "Status"
 
-#: client/components/status/status.js:173
+#: client/components/status/status.js:205
 msgid "PASSWORD_EXPIRED"
 msgstr "Vaše geslo je poteklo, posodobite ga."
 
-#: client/components/status/status.js:425
+#: client/components/status/status.js:457
 msgid "PLAN_EXHAUSTED_TOAST"
 msgstr "Vyčerpali ste návštevnosť dostupnú pre váš balík."
 
-#: client/components/status/status.js:483
+#: client/components/status/status.js:515
 msgid "SUCCESS_UPGRADE_PLAN"
 msgstr "Prebieha aktualizácia plánu"
 
-#: client/components/status/status.js:1470
+#: client/components/status/status.js:1433
 msgid "STATUS_CONTENT"
 msgstr "Prijava v WiFi je uspela!  NZdaj lahko uporabljate internet.  NTo stran lahko pustite odprto, če se želite odjaviti."
 
-#: client/components/status/status.js:1472
+#: client/components/status/status.js:1435
 msgid "TRAFFIC_EXHAUSTED"
 msgstr "Doprava vyčerpaná"
 
-#: client/components/status/status.js:1481
+#: client/components/status/status.js:1444
 msgid "LOGOUT_MODAL_CONTENT"
 msgstr "Se želite naslednjič samodejno prijaviti?"
 
-#: client/components/status/status.js:1508
+#: client/components/status/status.js:1471
 msgid "CURRENT_SUBSCRIPTION_TXT"
 msgstr "Aktuálne predplatné:"
 
-#: client/components/status/status.js:1605
+#: client/components/status/status.js:1570
 msgid "PLAN_UPGRADE_BTN_TXT"
 msgstr "Inovovať"
 
-#: client/components/status/status.js:1534
+#: client/components/status/status.js:1499
 msgid "USAGE_TIME"
 msgstr "Čas"
 
-#: client/components/status/status.js:1535
+#: client/components/status/status.js:1500
 msgid "USAGE_DATA"
 msgstr "Podatki"
 
-#: client/components/status/status.js:1167
-#: client/components/status/status.js:1202
+#: client/components/status/status.js:1206
+#: client/components/status/status.js:1226
 msgid "N/A"
 msgstr "N/A"
 
-#: client/components/status/status.js:1181
-#: client/components/status/status.js:1184
-#: client/components/status/status.js:1211
-#: client/components/status/status.js:1214
-#: client/components/status/status.js:1253
-#: client/components/status/status.js:1256
+#: client/components/status/status.js:51
 msgid "TIME_HOUR_ABBR"
 msgstr "h"
 
-#: client/components/status/status.js:1181
-#: client/components/status/status.js:1187
-#: client/components/status/status.js:1211
-#: client/components/status/status.js:1217
-#: client/components/status/status.js:1253
-#: client/components/status/status.js:1259
+#: client/components/status/status.js:54
+#: client/components/status/status.js:1214
 msgid "TIME_MINUTE_ABBR"
 msgstr "m"
 
-#: client/components/status/status.js:1189
-#: client/components/status/status.js:1219
-#: client/components/status/status.js:1261
+#: client/components/status/status.js:56
 msgid "TIME_LESS_THAN_MINUTE"
 msgstr "<1m"
 
@@ -726,34 +715,33 @@ msgstr "Prosimo, dokončajte svojo registracijo za"
 msgid "RETRY"
 msgstr "Poskusi znova"
 
-#: client/components/status/status.js:1427
+#: client/components/status/status.js:1390
 #. eslint-disable-next-line class-methods-use-this
 msgid "USAGE_UNAVAILABLE"
 msgstr "Podatki o uporabi niso na voljo"
 
-#: client/components/status/status.js:1234
-#: client/components/status/status.js:1236
+#: client/components/status/status.js:1238
+#: client/components/status/status.js:1240
 msgid "USAGE_USED_OF"
 msgstr "porabljeno od"
 
-#: client/components/status/status.js:1335
-#: client/components/status/status.js:1394
+#: client/components/status/status.js:1315
+#: client/components/status/status.js:1373
 msgid "USAGE_REMAINING"
 msgstr "preostalo"
 
-#: client/components/status/status.js:1511
-msgid "DAILY_USAGE_OVERVIEW"
-msgstr "Dnevni pregled porabe"
+#: client/components/status/status.js:48
+msgid "TIME_DAY_ABBR"
+msgstr "d"
 
-#: client/components/status/status.js:1513
-msgid "DAILY_USAGE_OVERVIEW_DESCRIPTION"
-msgstr "Spremljajte, koliko časa in podatkov ste danes porabili"
+#: client/components/status/status.js:1474
+msgid "USAGE_OVERVIEW"
+msgstr "Pregled porabe"
 
-#: client/components/status/status.js:1585
-msgid "DAILY_LIMITS_RESET_IN"
-msgstr "Dnevne omejitve se ponastavijo čez"
-#: client/components/status/status.js:1179
-msgid "USAGE_LIMIT_EXHAUSTED_TXT"
-msgstr ""
-"Vyčerpali ste dostupnú premávku. Ak chcete službu naďalej používať, inovujte "
-"ju."
+#: client/components/status/status.js:1476
+msgid "USAGE_OVERVIEW_DESCRIPTION"
+msgstr "Spremljajte, koliko časa in podatkov ste porabili"
+
+#: client/components/status/status.js:1550
+msgid "USAGE_LIMITS_RESET_IN"
+msgstr "Omejitve porabe se ponastavijo čez"

@@ -8,6 +8,7 @@ import {CircularProgressbarWithChildren} from "react-circular-progressbar";
 import {filesize as formatBytes} from "filesize";
 import ShallowRenderer from "react-test-renderer/shallow";
 import {toast} from "react-toastify";
+import {addLocale, useLocale} from "ttag";
 import getConfig from "../../utils/get-config";
 import loadTranslation from "../../utils/load-translation";
 import logError from "../../utils/log-error";
@@ -281,11 +282,11 @@ describe("<Status /> usage rendering helpers", () => {
         "USAGE_TIME",
       );
       expect(element.find(".usage-check-used").text()).toContain(
-        "USAGE_USED_OF1TIME_HOUR_ABBR 30TIME_MINUTE_ABBR3TIME_HOUR_ABBR",
+        "1TIME_HOUR_ABBR\u00a030TIME_MINUTE_ABBR\nUSAGE_USED_OF 3TIME_HOUR_ABBR",
       );
       expect(element.find(".usage-progress-details")).toHaveLength(1);
       expect(element.find(".usage-progress-remaining").text()).toBe(
-        "Remaining",
+        "USAGE_REMAINING",
       );
       const progressbar = element.find(CircularProgressbarWithChildren);
       expect(progressbar.exists()).toBe(true);
@@ -393,7 +394,7 @@ describe("<Status /> usage rendering helpers", () => {
 
     expect(element.find(".usage-check-header").text()).toContain("USAGE_DATA");
     expect(element.text()).toContain(
-      `USAGE_USED_OF${formatBytes(1536, {round: 2}).replace(" ", "\u00a0")}${formatBytes(2048, {round: 2}).replace(" ", "\u00a0")}`,
+      `${formatBytes(1536, {round: 2}).replace(" ", "\u00a0")} USAGE_USED_OF ${formatBytes(2048, {round: 2}).replace(" ", "\u00a0")}`,
     );
     expect(element.find(".usage-progress-bar-fill").prop("style")).toEqual({
       width: "75%",
@@ -435,11 +436,22 @@ describe("<Status /> usage rendering helpers", () => {
       rememberMe: false,
       showUpgradeBtn: true,
     });
-
+    expect(component.find(".usage-overview-title").text()).toBe(
+      "USAGE_OVERVIEW",
+    );
     expect(component.find(".usage-reset-info")).toHaveLength(1);
     expect(component.find(".usage-reset-info").text()).toBe(
-      "*USAGE_LIMITS_RESET_IN2TIME_HOUR_ABBR 30TIME_MINUTE_ABBR",
+      "*USAGE_LIMITS_RESET_IN 2TIME_HOUR_ABBR\u00a030TIME_MINUTE_ABBR",
     );
+    dateSpy.mockRestore();
+  });
+
+  it("should format reset times longer than a day with days", () => {
+    const now = 1_700_000_000;
+    const dateSpy = jest.spyOn(Date, "now").mockReturnValue(now * 1000);
+    expect(
+      wrapper.instance().getResetTimeRemaining(now + 3 * 86400 + 9000),
+    ).toBe("3TIME_DAY_ABBR\u00a02TIME_HOUR_ABBR\u00a030TIME_MINUTE_ABBR");
 
     dateSpy.mockRestore();
   });
@@ -479,12 +491,12 @@ describe("<Status /> usage rendering helpers", () => {
 
     // Seconds: used 5400 (1h30m) of total 9000 (2h30m)
     expect(instance.getUserCheckUsedValue(9000, "seconds", 5400)).toBe(
-      "USAGE_USED_OF1TIME_HOUR_ABBR 30TIME_MINUTE_ABBR2TIME_HOUR_ABBR 30TIME_MINUTE_ABBR",
+      "1TIME_HOUR_ABBR\u00a030TIME_MINUTE_ABBR USAGE_USED_OF 2TIME_HOUR_ABBR\u00a030TIME_MINUTE_ABBR",
     );
 
     // Bytes: used 0 should include the byte unit
     expect(instance.getUserCheckUsedValue(2048, "bytes", 0)).toBe(
-      `USAGE_USED_OF${formatBytes(0, {round: 2}).replace(" ", "\u00a0")}${formatBytes(2048, {round: 2}).replace(" ", "\u00a0")}`,
+      `${formatBytes(0, {round: 2}).replace(" ", "\u00a0")} USAGE_USED_OF ${formatBytes(2048, {round: 2}).replace(" ", "\u00a0")}`,
     );
 
     expect(instance.getUserCheckUsedValue(3072, "bytes", 1536)).toContain(
@@ -558,6 +570,36 @@ describe("<Status /> usage rendering helpers", () => {
     expect(component.find(".usage-reset-info")).toHaveLength(0);
 
     dateSpy.mockRestore();
+  });
+
+  it("should render translated warning messages", () => {
+    const translatedWarning = "Your data limit has been reached";
+    addLocale("test", {
+      headers: {
+        "content-type": "text/plain; charset=utf-8",
+        "plural-forms": "nplurals = 2; plural = (n != 1);",
+      },
+      translations: {
+        "": {
+          USAGE_LIMIT_EXHAUSTED_TXT: {
+            msgid: "USAGE_LIMIT_EXHAUSTED_TXT",
+            msgstr: [translatedWarning],
+          },
+        },
+      },
+    });
+    useLocale("test");
+    const prop = createTestProps();
+    prop.statusPage.radius_usage_enabled = true;
+    const component = shallow(<Status {...prop} />, {
+      context: {setLoading: jest.fn()},
+      disableLifecycleMethods: true,
+    });
+    component.setState({
+      radiusUsageSpinner: false,
+      warningMessage: "USAGE_LIMIT_EXHAUSTED_TXT",
+    });
+    expect(component.find(".important strong").text()).toBe(translatedWarning);
   });
 
   it("should skip empty status content lines", () => {
@@ -2621,6 +2663,7 @@ describe("<Status /> interactions", () => {
     jest.spyOn(toast, "dismiss");
     jest.spyOn(global, "setTimeout");
     props = createTestProps();
+    props.statusPage.radius_usage_enabled = true;
     wrapper = shallow(<Status {...props} />, {
       context: {setLoading: jest.fn()},
       disableLifecycleMethods: true,

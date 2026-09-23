@@ -40,18 +40,20 @@ import getPlans from "../../utils/get-plans";
 import upgradePlan from "../../utils/upgrade-plan";
 
 const formatUsageTime = (seconds) => {
-  const hours = Math.floor(seconds / 3600);
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  if (hours > 0 && minutes > 0) {
-    return `${hours}${t`TIME_HOUR_ABBR`}\u00a0${minutes}${t`TIME_MINUTE_ABBR`}`;
+  const parts = [];
+  if (days > 0) {
+    parts.push(`${days}${t`TIME_DAY_ABBR`}`);
   }
   if (hours > 0) {
-    return `${hours}${t`TIME_HOUR_ABBR`}`;
+    parts.push(`${hours}${t`TIME_HOUR_ABBR`}`);
   }
   if (minutes > 0) {
-    return `${minutes}${t`TIME_MINUTE_ABBR`}`;
+    parts.push(`${minutes}${t`TIME_MINUTE_ABBR`}`);
   }
-  return t`TIME_LESS_THAN_MINUTE`;
+  return parts.length ? parts.join("\u00a0") : t`TIME_LESS_THAN_MINUTE`;
 };
 
 // Keep a formatted value and its unit on the same line.
@@ -1251,6 +1253,13 @@ export default class Status extends React.Component {
   };
 
   // eslint-disable-next-line class-methods-use-this
+  getWarningMessage = (message) => 
+    /* disable ttag */
+     gettext(message)
+    /* enable ttag */
+  ;
+
+  // eslint-disable-next-line class-methods-use-this
   getUsageClass = (value, result) => {
     const numValue = Number(value);
     const numResult = Number(result);
@@ -1459,10 +1468,8 @@ export default class Status extends React.Component {
                 {settings.subscriptions && userPlan.name && (
                   <h3>{`${t`CURRENT_SUBSCRIPTION_TXT`} ${userPlan.name}`}</h3>
                 )}
-                <div className="usage-overview-title">
-                  {t`DAILY_USAGE_OVERVIEW`}
-                </div>
-                <p>{t`DAILY_USAGE_OVERVIEW_DESCRIPTION`}</p>
+                <div className="usage-overview-title">{t`USAGE_OVERVIEW`}</div>
+                <p>{t`USAGE_OVERVIEW_DESCRIPTION`}</p>
                 {radiusUsageSpinner ? this.getSpinner() : null}
                 {userChecks && (
                   <div className="usage-details">
@@ -1536,16 +1543,14 @@ export default class Status extends React.Component {
                     </div>
                     {usageResetTime && (
                       <div className="usage-reset-info usage-overview-reset-info">
-                        *{t`DAILY_LIMITS_RESET_IN`} {usageResetTime}
+                        *{t`USAGE_LIMITS_RESET_IN`} {usageResetTime}
                       </div>
                     )}
                   </div>
                 )}
                 {warningMessage && (
                   <p className="important">
-                    {/* disable ttag */}
-                    <strong>{gettext(warningMessage)}</strong>
-                    {/* enable ttag */}
+                    <strong>{this.getWarningMessage(warningMessage)}</strong>
                   </p>
                 )}
                 {settings.subscriptions &&
