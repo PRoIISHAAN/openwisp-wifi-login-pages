@@ -154,10 +154,10 @@ This setting controls whether RADIUS usage information (such as data
 usage, session time, etc.) is displayed on the status page.
 
 - **Type**: ``boolean``
-- **Default**: ``false``
+- **Default**: ``true``
 
-When set to ``true``, the user's session and accounting information will
-be displayed.
+When set to ``true``, the user's RADIUS usage information will be
+displayed.
 
 Example:
 

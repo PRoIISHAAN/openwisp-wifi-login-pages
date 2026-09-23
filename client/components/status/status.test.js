@@ -193,7 +193,6 @@ describe("<Status /> rendering", () => {
 
 describe("<Status /> usage rendering helpers", () => {
   let wrapper;
-
   const usageCheck = {
     attribute: "Max-Daily-Session",
     op: ":=",
@@ -216,61 +215,40 @@ describe("<Status /> usage rendering helpers", () => {
       {
         value: 0,
         result: 0,
-        color: "#1AAA55",
-        timerIcon: "/assets/default/timerIconGreen.svg",
-        dataIcon: "/assets/default/dataIconGreen.svg",
+        usageClass: "usage-low",
       },
       {
         result: 0,
         value: 100,
-        color: "#1AAA55",
-        timerIcon: "/assets/default/timerIconGreen.svg",
-        dataIcon: "/assets/default/dataIconGreen.svg",
+        usageClass: "usage-low",
       },
       {
         result: 50,
-        color: "#1AAA55",
-        timerIcon: "/assets/default/timerIconGreen.svg",
-        dataIcon: "/assets/default/dataIconGreen.svg",
+        usageClass: "usage-low",
       },
       {
         result: 51,
-        color: "#FBBF24",
-        timerIcon: "/assets/default/timerIconYellow.svg",
-        dataIcon: "/assets/default/dataIconYellow.svg",
+        usageClass: "usage-medium",
       },
       {
         result: 79,
-        color: "#FBBF24",
-        timerIcon: "/assets/default/timerIconYellow.svg",
-        dataIcon: "/assets/default/dataIconYellow.svg",
+        usageClass: "usage-medium",
       },
       {
         result: 80,
-        color: "#FBBF24",
-        timerIcon: "/assets/default/timerIconYellow.svg",
-        dataIcon: "/assets/default/dataIconYellow.svg",
+        usageClass: "usage-medium",
       },
       {
         result: 81,
-        color: "#DB3B21",
-        timerIcon: "/assets/default/timerIconRed.svg",
-        dataIcon: "/assets/default/dataIconRed.svg",
+        usageClass: "usage-high",
       },
       {
         result: 100,
-        color: "#DB3B21",
-        timerIcon: "/assets/default/timerIconRed.svg",
-        dataIcon: "/assets/default/dataIconRed.svg",
+        usageClass: "usage-high",
       },
     ];
-
-    cases.forEach(({value = 100, result, color, timerIcon, dataIcon}) => {
-      expect(instance.getUsageColorAndIcons(value, result)).toEqual({
-        color,
-        timerIcon,
-        dataIcon,
-      });
+    cases.forEach(({value = 100, result, usageClass}) => {
+      expect(instance.getUsageClass(value, result)).toBe(usageClass);
     });
   });
 
@@ -278,66 +256,65 @@ describe("<Status /> usage rendering helpers", () => {
     const instance = wrapper.instance();
     const cases = [
       {
-        color: "#1AAA55",
-        icon: "/assets/default/timerIconGreen.svg",
+        usageClass: "usage-low",
+        icon: "timer",
       },
       {
-        color: "#FBBF24",
-        icon: "/assets/default/timerIconYellow.svg",
+        usageClass: "usage-medium",
+        icon: "timer",
       },
       {
-        color: "#DB3B21",
-        icon: "/assets/default/timerIconRed.svg",
+        usageClass: "usage-high",
+        icon: "timer",
       },
     ];
-
-    cases.forEach(({color, icon}) => {
+    cases.forEach(({usageClass, icon}) => {
       const element = shallow(
         instance.renderUsageCheckContentSmall(
           usageCheck,
-          color,
+          usageClass,
           icon,
           "USAGE_TIME",
         ),
       );
-
       expect(element.find(".usage-check-header").text()).toContain(
         "USAGE_TIME",
       );
       expect(element.find(".usage-check-used").text()).toContain(
-        "1TIME_HOUR_ABBR 30TIME_MINUTE_ABBR USAGE_USED_OF 3TIME_HOUR_ABBR",
+        "USAGE_USED_OF1TIME_HOUR_ABBR 30TIME_MINUTE_ABBR3TIME_HOUR_ABBR",
       );
-
+      expect(element.find(".usage-progress-details")).toHaveLength(1);
+      expect(element.find(".usage-progress-remaining").text()).toBe(
+        "Remaining",
+      );
       const progressbar = element.find(CircularProgressbarWithChildren);
       expect(progressbar.exists()).toBe(true);
       expect(progressbar.prop("value")).toBe(5400);
       expect(progressbar.prop("maxValue")).toBe("10800");
-      expect(progressbar.prop("styles").path.stroke).toBe(color);
+      expect(progressbar.prop("styles").path.stroke).toBe("var(--usage-color)");
     });
   });
-
   it("should render the horizontal usage content in all color zones", () => {
     const instance = wrapper.instance();
     const cases = [
       {
-        color: "#1AAA55",
-        icon: "/assets/default/timerIconGreen.svg",
+        usageClass: "usage-low",
+        icon: "timer",
       },
       {
-        color: "#FBBF24",
-        icon: "/assets/default/timerIconYellow.svg",
+        usageClass: "usage-medium",
+        icon: "timer",
       },
       {
-        color: "#DB3B21",
-        icon: "/assets/default/timerIconRed.svg",
+        usageClass: "usage-high",
+        icon: "timer",
       },
     ];
-
-    cases.forEach(({color, icon}) => {
+    cases.forEach(({usageClass, icon}) => {
       const element = shallow(
         instance.renderUsageCheckContentBig(
           usageCheck,
-          color,
+          usageClass,
           icon,
           "USAGE_TIME",
         ),
@@ -348,11 +325,14 @@ describe("<Status /> usage rendering helpers", () => {
       );
       expect(element.find(".usage-progress-bar-fill").prop("style")).toEqual({
         width: "50%",
-        backgroundColor: color,
+        backgroundColor: "var(--usage-color)",
       });
-      expect(element.find(".usage-progress-text-bottom").text()).toContain(
-        "USAGE_REMAINING",
+      expect(element.find(".usage-progress-summary-used").text()).toContain(
+        "USAGE_USED_OF",
       );
+      expect(
+        element.find(".usage-progress-summary-remaining").text(),
+      ).toContain("USAGE_REMAINING");
     });
   });
 
@@ -405,23 +385,23 @@ describe("<Status /> usage rendering helpers", () => {
           result: 1536,
           type: "bytes",
         },
-        "#1AAA55",
-        "/assets/default/dataIconGreen.svg",
+        "usage-low",
+        "data",
         "USAGE_DATA",
       ),
     );
 
     expect(element.find(".usage-check-header").text()).toContain("USAGE_DATA");
     expect(element.text()).toContain(
-      `${formatBytes(1536, {round: 2})} USAGE_USED_OF ${formatBytes(2048, {round: 2})}`,
+      `USAGE_USED_OF${formatBytes(1536, {round: 2}).replace(" ", "\u00a0")}${formatBytes(2048, {round: 2}).replace(" ", "\u00a0")}`,
     );
     expect(element.find(".usage-progress-bar-fill").prop("style")).toEqual({
       width: "75%",
-      backgroundColor: "#1AAA55",
+      backgroundColor: "var(--usage-color)",
     });
   });
 
-  it("should render reset time remaining in the usage overview", () => {
+  it("should render reset time remaining once for the usage overview", () => {
     const now = 1_700_000_000;
     const dateSpy = jest.spyOn(Date, "now").mockReturnValue(now * 1000);
     const prop = createTestProps();
@@ -434,7 +414,15 @@ describe("<Status /> usage rendering helpers", () => {
     component.setState({
       showRadiusUsage: true,
       radiusUsageSpinner: false,
-      userChecks: [{...usageCheck, reset: now + 9000}],
+      userChecks: [
+        {...usageCheck, reset: now + 9000},
+        {
+          ...usageCheck,
+          attribute: "Max-Daily-Session-Traffic",
+          type: "bytes",
+          reset: now + 3600,
+        },
+      ],
       userPlan: {},
       userInfo: {},
       activeSessions: [],
@@ -448,8 +436,9 @@ describe("<Status /> usage rendering helpers", () => {
       showUpgradeBtn: true,
     });
 
+    expect(component.find(".usage-reset-info")).toHaveLength(1);
     expect(component.find(".usage-reset-info").text()).toBe(
-      "*DAILY_LIMITS_RESET_IN 2TIME_HOUR_ABBR 30TIME_MINUTE_ABBR",
+      "*USAGE_LIMITS_RESET_IN2TIME_HOUR_ABBR 30TIME_MINUTE_ABBR",
     );
 
     dateSpy.mockRestore();
@@ -464,10 +453,14 @@ describe("<Status /> usage rendering helpers", () => {
     );
 
     // Bytes remaining equals zero should return 0
-    expect(instance.getUserCheckFormattedValue(100, "bytes", 100)).toBe("0");
+    expect(instance.getUserCheckFormattedValue(100, "bytes", 100)).toBe(
+      formatBytes(0, {round: 2}).replace(" ", "\u00a0"),
+    );
 
     // Seconds remaining equals zero should return 0
-    expect(instance.getUserCheckFormattedValue(60, "seconds", 60)).toBe("0");
+    expect(instance.getUserCheckFormattedValue(60, "seconds", 60)).toBe(
+      "0TIME_MINUTE_ABBR",
+    );
 
     // Default type should return numeric remaining as string
     expect(instance.getUserCheckFormattedValue(100, "custom", 20)).toBe("80");
@@ -486,12 +479,16 @@ describe("<Status /> usage rendering helpers", () => {
 
     // Seconds: used 5400 (1h30m) of total 9000 (2h30m)
     expect(instance.getUserCheckUsedValue(9000, "seconds", 5400)).toBe(
-      "1TIME_HOUR_ABBR 30TIME_MINUTE_ABBR USAGE_USED_OF 2TIME_HOUR_ABBR 30TIME_MINUTE_ABBR",
+      "USAGE_USED_OF1TIME_HOUR_ABBR 30TIME_MINUTE_ABBR2TIME_HOUR_ABBR 30TIME_MINUTE_ABBR",
     );
 
-    // Bytes: used 0 should produce '0' as usedFormatted
+    // Bytes: used 0 should include the byte unit
     expect(instance.getUserCheckUsedValue(2048, "bytes", 0)).toBe(
-      `0 USAGE_USED_OF ${formatBytes(2048, {round: 2})}`,
+      `USAGE_USED_OF${formatBytes(0, {round: 2}).replace(" ", "\u00a0")}${formatBytes(2048, {round: 2}).replace(" ", "\u00a0")}`,
+    );
+
+    expect(instance.getUserCheckUsedValue(3072, "bytes", 1536)).toContain(
+      "\u00a0",
     );
   });
 
@@ -507,8 +504,28 @@ describe("<Status /> usage rendering helpers", () => {
     expect(userInfo).toHaveProperty("email");
 
     // Default usage color when value is zero or non-numeric
-    expect(instance.getUsageColorAndIcons(0, 0).color).toBe("#1AAA55");
-    expect(instance.getUsageColorAndIcons("", 10).color).toBe("#1AAA55");
+    expect(instance.getUsageClass(0, 0)).toBe("usage-low");
+    expect(instance.getUsageClass("", 10)).toBe("usage-low");
+  });
+
+  it("should show unavailable usage without rendering a meter", () => {
+    const prop = createTestProps();
+    prop.statusPage.radius_usage_enabled = true;
+    const component = shallow(<Status {...prop} />, {
+      context: {setLoading: jest.fn()},
+      disableLifecycleMethods: true,
+    });
+    component.setState({
+      showRadiusUsage: true,
+      radiusUsageSpinner: false,
+      userChecks: [
+        {...usageCheck, result: null},
+        {...usageCheck, attribute: "Invalid-Usage", result: "not-a-number"},
+      ],
+    });
+    expect(component.find(".usage-check-unavailable")).toHaveLength(4);
+    expect(component.find(CircularProgressbarWithChildren)).toHaveLength(0);
+    expect(component.find(".usage-progress-bar-fill")).toHaveLength(0);
   });
 
   it("should hide reset time info when the reset time has passed", () => {
@@ -2642,6 +2659,7 @@ describe("<Status /> interactions", () => {
               value: "10800",
               result: 0,
               type: "seconds",
+              reset: Math.floor(Date.now() / 1000) + 3600,
             },
           ],
         },
@@ -2652,6 +2670,7 @@ describe("<Status /> interactions", () => {
     await tick();
     expect(wrapper.instance().state.userChecks.length).toBe(1);
     expect(wrapper.instance().state.showRadiusUsage).toBe(true);
+    expect(wrapper.find(".usage-reset-info")).toHaveLength(1);
 
     // A free plan is present in the response
     axios.mockImplementationOnce(() =>

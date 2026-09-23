@@ -39,6 +39,38 @@ import getPlanSelection from "../../utils/get-plan-selection";
 import getPlans from "../../utils/get-plans";
 import upgradePlan from "../../utils/upgrade-plan";
 
+const formatUsageTime = (seconds) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  if (hours > 0 && minutes > 0) {
+    return `${hours}${t`TIME_HOUR_ABBR`}\u00a0${minutes}${t`TIME_MINUTE_ABBR`}`;
+  }
+  if (hours > 0) {
+    return `${hours}${t`TIME_HOUR_ABBR`}`;
+  }
+  if (minutes > 0) {
+    return `${minutes}${t`TIME_MINUTE_ABBR`}`;
+  }
+  return t`TIME_LESS_THAN_MINUTE`;
+};
+
+// Keep a formatted value and its unit on the same line.
+const formatUsageBytes = (bytes) =>
+  filesize(bytes, {round: 2}).replace(/ /g, "\u00a0");
+
+const getUsageNumber = (value) => {
+  if (
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "") ||
+    typeof value === "boolean"
+  ) {
+    return null;
+  }
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+};
+
 export default class Status extends React.Component {
   constructor(props) {
     super(props);
@@ -1164,79 +1196,45 @@ export default class Status extends React.Component {
 
   // eslint-disable-next-line class-methods-use-this
   getUserCheckFormattedValue = (value, type, result) => {
-    const intValue = Number(value);
-    const intResult = Number(result);
-
-    if (!Number.isFinite(intValue) || !Number.isFinite(intResult)) {
+    const total = Number(value);
+    const used = Number(result);
+    if (!Number.isFinite(total) || !Number.isFinite(used)) {
       return t`N/A`;
     }
-
-    const remaining = Math.max(0, intValue - intResult);
+    const remaining = Math.max(0, total - used);
     switch (type) {
       case "bytes":
-        return remaining === 0 ? t`0` : `${filesize(remaining, {round: 2})}`;
-      case "seconds": {
-        if (remaining === 0) {
-          return t`0`;
-        }
-        const hours = Math.floor(remaining / 3600);
-        const minutes = Math.floor((remaining % 3600) / 60);
-        if (hours > 0 && minutes > 0) {
-          return `${hours}${t`TIME_HOUR_ABBR`} ${minutes}${t`TIME_MINUTE_ABBR`}`;
-        }
-        if (hours > 0) {
-          return `${hours}${t`TIME_HOUR_ABBR`}`;
-        }
-        if (minutes > 0) {
-          return `${minutes}${t`TIME_MINUTE_ABBR`}`;
-        }
-        return t`TIME_LESS_THAN_MINUTE`;
-      }
+        return formatUsageBytes(remaining);
+      case "seconds":
+        return remaining === 0
+          ? `0${t`TIME_MINUTE_ABBR`}`
+          : formatUsageTime(remaining);
       default:
         return `${remaining}`;
     }
   };
 
   // eslint-disable-next-line class-methods-use-this
-  getUserCheckUsedValue = (value, type, result) => {
-    const intValue = Number(value);
-    const intResult = Number(result);
-
-    if (!Number.isFinite(intValue) || !Number.isFinite(intResult)) {
+  getUserCheckUsedValue = (value, type, result, multiline = false) => {
+    const total = Number(value);
+    const resultNumber = Number(result);
+    if (!Number.isFinite(total) || !Number.isFinite(resultNumber)) {
       return t`N/A`;
     }
-
-    const used = Math.min(intResult, intValue);
-
-    const formatTime = (seconds) => {
-      const hours = Math.floor(seconds / 3600);
-      const minutes = Math.floor((seconds % 3600) / 60);
-      if (hours > 0 && minutes > 0) {
-        return `${hours}${t`TIME_HOUR_ABBR`} ${minutes}${t`TIME_MINUTE_ABBR`}`;
-      }
-      if (hours > 0) {
-        return `${hours}${t`TIME_HOUR_ABBR`}`;
-      }
-      if (minutes > 0) {
-        return `${minutes}${t`TIME_MINUTE_ABBR`}`;
-      }
-      return t`TIME_LESS_THAN_MINUTE`;
-    };
-
-    switch (type) {
-      case "bytes": {
-        const usedFormatted = used === 0 ? "0" : filesize(used, {round: 2});
-        const totalFormatted = filesize(intValue, {round: 2});
-        return `${usedFormatted} ${t`USAGE_USED_OF`} ${totalFormatted}`;
-      }
-      case "seconds": {
-        const usedFormatted = used === 0 ? "0" : formatTime(used);
-        const totalFormatted = formatTime(intValue);
-        return `${usedFormatted} ${t`USAGE_USED_OF`} ${totalFormatted}`;
-      }
-      default:
-        return `${used} ${t`USAGE_USED_OF`} ${intValue}`;
+    const used = Math.min(resultNumber, total);
+    let usedFormatted = used;
+    let totalFormatted = total;
+    if (type === "bytes") {
+      usedFormatted = formatUsageBytes(used);
+      totalFormatted = formatUsageBytes(total);
+    } else if (type === "seconds") {
+      usedFormatted = formatUsageTime(used);
+      totalFormatted = formatUsageTime(total);
     }
+    const usedValue = `${usedFormatted} ${t`USAGE_USED_OF`} ${totalFormatted}`;
+    return multiline
+      ? `${usedFormatted}\n${t`USAGE_USED_OF`} ${totalFormatted}`
+      : usedValue;
   };
 
   // eslint-disable-next-line class-methods-use-this
@@ -1249,133 +1247,139 @@ export default class Status extends React.Component {
     if (secondsRemaining <= 0) {
       return null;
     }
-    const hours = Math.floor(secondsRemaining / 3600);
-    const minutes = Math.floor((secondsRemaining % 3600) / 60);
-    if (hours > 0 && minutes > 0) {
-      return `${hours}${t`TIME_HOUR_ABBR`} ${minutes}${t`TIME_MINUTE_ABBR`}`;
-    }
-    if (hours > 0) {
-      return `${hours}${t`TIME_HOUR_ABBR`}`;
-    }
-    if (minutes > 0) {
-      return `${minutes}${t`TIME_MINUTE_ABBR`}`;
-    }
-    return t`TIME_LESS_THAN_MINUTE`;
+    return formatUsageTime(secondsRemaining);
   };
 
   // eslint-disable-next-line class-methods-use-this
-  getUsageColorAndIcons = (value, result) => {
+  getUsageClass = (value, result) => {
     const numValue = Number(value);
     const numResult = Number(result);
-
     // Default to green (low usage) if value is 0 or non-numeric
     if (!numValue || Number.isNaN(numValue)) {
-      return {
-        color: "#1AAA55",
-        timerIcon: "/assets/default/timerIconGreen.svg",
-        dataIcon: "/assets/default/dataIconGreen.svg",
-      };
+      return "usage-low";
     }
-
     const usagePercentage = (numResult / numValue) * 100;
-
     if (usagePercentage <= 50) {
-      return {
-        color: "#1AAA55",
-        timerIcon: "/assets/default/timerIconGreen.svg",
-        dataIcon: "/assets/default/dataIconGreen.svg",
-      };
+      return "usage-low";
     }
     if (usagePercentage <= 80) {
-      return {
-        color: "#FBBF24",
-        timerIcon: "/assets/default/timerIconYellow.svg",
-        dataIcon: "/assets/default/dataIconYellow.svg",
-      };
+      return "usage-medium";
     }
-    return {
-      color: "#DB3B21",
-      timerIcon: "/assets/default/timerIconRed.svg",
-      dataIcon: "/assets/default/dataIconRed.svg",
-    };
+    return "usage-high";
   };
 
-  renderUsageCheckContentSmall = (check, color, icon, label) => (
-    <div className="usage-check-content">
-      <div className="usage-check-header">
-        <img src={icon} alt={`${label} Icon`} />
-        <div>{label}</div>
-      </div>
-      <div className="usage-progress-wrapper">
-        <CircularProgressbarWithChildren
-          id={check.attribute}
-          strokeWidth={12}
-          value={check.result}
-          maxValue={check.value}
-          styles={buildStyles({
-            pathColor: color,
-            trailColor: "#EAECF0",
-            strokeLinecap: "butt",
-            pathTransitionDuration: 0.5,
-          })}
-        >
-          <div className="usage-progress-text">
-            <strong>
-              {this.getUserCheckFormattedValue(
-                check.value,
-                check.type,
-                check.result,
-              )}
-            </strong>
-            <div className="usage-progress-remaining">{t`USAGE_REMAINING`}</div>
-          </div>
-        </CircularProgressbarWithChildren>
-      </div>
-      <div className="usage-check-used">
-        {this.getUserCheckUsedValue(check.value, check.type, check.result)}
-      </div>
-    </div>
-  );
-
-  renderUsageCheckContentBig = (check, color, icon, label) => {
-    const percentage = (check.result / check.value) * 100;
+  renderUsageCheckContentSmall = (check, usageClass, icon, label) => {
+    const remaining = this.getUserCheckFormattedValue(
+      check.value,
+      check.type,
+      check.result,
+    );
     return (
-      <div className="usage-check-content">
+      <div className={`usage-check-content ${usageClass}`}>
         <div className="usage-check-header">
-          <img src={icon} alt={`${label} Icon`} />
+          <span
+            aria-hidden="true"
+            className={`usage-check-icon ${icon}-icon`}
+          />
+          <div>{label}</div>
+        </div>
+        <div className="usage-progress-details">
+          <div className="usage-progress-wrapper">
+            <CircularProgressbarWithChildren
+              id={check.attribute}
+              strokeWidth={12}
+              value={check.result}
+              maxValue={check.value}
+              styles={buildStyles({
+                pathColor: "var(--usage-color)",
+                trailColor: "#EAECF0",
+                strokeLinecap: "butt",
+                pathTransitionDuration: 0.5,
+              })}
+              aria-label={label}
+            >
+              <div className="usage-progress-text">
+                <strong>{remaining}</strong>
+                <div className="usage-progress-remaining">
+                  {t`USAGE_REMAINING`}
+                </div>
+              </div>
+            </CircularProgressbarWithChildren>
+          </div>
+          <div className={`usage-check-used usage-check-used-${check.type}`}>
+            {this.getUserCheckUsedValue(
+              check.value,
+              check.type,
+              check.result,
+              true,
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  renderUsageCheckContentBig = (check, usageClass, icon, label) => {
+    const percentage = (check.result / check.value) * 100;
+    const remaining = this.getUserCheckFormattedValue(
+      check.value,
+      check.type,
+      check.result,
+    );
+    return (
+      <div className={`usage-check-content ${usageClass}`}>
+        <div className="usage-check-header">
+          <span
+            aria-hidden="true"
+            className={`usage-check-icon ${icon}-icon`}
+          />
           <div>{label}</div>
         </div>
         <div className="usage-progress-wrapper-big">
           <div className="usage-progress-bar-container">
             <div
               className="usage-progress-bar-fill"
+              role="progressbar"
+              aria-label={label}
+              aria-valuemin={0}
+              aria-valuemax={check.value}
+              aria-valuenow={Math.min(check.result, check.value)}
               style={{
                 width: `${Math.min(percentage, 100)}%`,
-                backgroundColor: color,
+                backgroundColor: "var(--usage-color)",
               }}
             />
           </div>
           <div className="usage-progress-text-bottom">
-            <div style={{fontWeight: "400", color: "#71717A"}}>
-              {this.getUserCheckFormattedValue(
-                check.value,
-                check.type,
-                check.result,
-              )}{" "}
-              {t`USAGE_REMAINING`}
-            </div>
-            <div style={{color: "#52525B"}}>
+            <div className="usage-progress-summary-used">
               {this.getUserCheckUsedValue(
                 check.value,
                 check.type,
                 check.result,
               )}
             </div>
+            <div className="usage-progress-summary-remaining">
+              {remaining} {t`USAGE_REMAINING`}
+            </div>
           </div>
         </div>
       </div>
     );
   };
+
+  // eslint-disable-next-line class-methods-use-this
+  renderUsageCheckUnavailable = (usageClass, icon, label) => (
+    <div className={`usage-check-content usage-check-unavailable ${usageClass}`}>
+      <div className="usage-check-header">
+        <span
+          aria-hidden="true"
+          className={`usage-check-icon ${icon}-icon`}
+        />
+        <div>{label}</div>
+      </div>
+      <div>{t`USAGE_UNAVAILABLE`}</div>
+    </div>
+  );
 
   render() {
     const {
@@ -1413,6 +1417,8 @@ export default class Status extends React.Component {
       modalActive,
       rememberMe,
     } = this.state;
+    const usageResetTime =
+      userChecks[0]?.reset && this.getResetTimeRemaining(userChecks[0].reset);
     const user_info = this.getUserInfo();
     const contentArr = t`STATUS_CONTENT`.split("\n");
     if (planExhausted) {
@@ -1450,53 +1456,68 @@ export default class Status extends React.Component {
           {statusPage.radius_usage_enabled &&
             showRadiusUsage &&
             !internetMode && (
-              <div className="usage-overview bg row">
-                <div className="usage-overview-title">{t`DAILY_USAGE_OVERVIEW`}</div>
+            <div className="usage-overview bg row limit-info">
+                {settings.subscriptions && userPlan.name && (
+                  <h3>{`${t`CURRENT_SUBSCRIPTION_TXT`} ${userPlan.name}`}</h3>
+                )}
+                <div className="usage-overview-title">
+                  {t`DAILY_USAGE_OVERVIEW`}
+                </div>
                 <p>{t`DAILY_USAGE_OVERVIEW_DESCRIPTION`}</p>
                 {radiusUsageSpinner ? this.getSpinner() : null}
-                {settings.subscriptions && userPlan.name && (
-                  <h3>
-                    {t`CURRENT_SUBSCRIPTION_TXT`} {userPlan.name}
-                  </h3>
-                )}
                 {userChecks && (
-                  <div style={{width: "100%"}}>
+                  <div className="usage-details">
                     <div className="usage-checks-container">
                       {userChecks.map((check) => {
-                        const valueNum = Number(check.value);
-                        const resultNum = Number(check.result);
+                        const valueNum = getUsageNumber(check.value);
+                        const resultNum = getUsageNumber(check.result);
                         if (
-                          !Number.isFinite(valueNum) ||
+                          valueNum === null ||
                           valueNum <= 0 ||
-                          !Number.isFinite(resultNum)
+                          !["seconds", "bytes"].includes(check.type)
                         ) {
                           return null;
+                        }
+                        const usageClass = this.getUsageClass(
+                          valueNum,
+                          resultNum,
+                        );
+                        const icon = check.type === "seconds" ? "timer" : "data";
+                        const label =
+                          check.type === "seconds"
+                            ? t`USAGE_TIME`
+                            : t`USAGE_DATA`;
+                        if (resultNum === null) {
+                          return (
+                            <React.Fragment key={check.attribute}>
+                              <div className="usage-box-inner-big">
+                                {this.renderUsageCheckUnavailable(
+                                  usageClass,
+                                  icon,
+                                  label,
+                                )}
+                              </div>
+                              <div className="usage-box-inner-small">
+                                {this.renderUsageCheckUnavailable(
+                                  usageClass,
+                                  icon,
+                                  label,
+                                )}
+                              </div>
+                            </React.Fragment>
+                          );
                         }
                         const normalizedCheck = {
                           ...check,
                           value: valueNum,
                           result: resultNum,
                         };
-                        const {color, timerIcon, dataIcon} =
-                          this.getUsageColorAndIcons(valueNum, resultNum);
-                        let icon = null;
-                        let label = null;
-                        if (check.type === "seconds") {
-                          icon = timerIcon;
-                          label = t`USAGE_TIME`;
-                        } else if (check.type === "bytes") {
-                          icon = dataIcon;
-                          label = t`USAGE_DATA`;
-                        }
-                        if (!icon) {
-                          return null;
-                        }
                         return (
                           <React.Fragment key={check.attribute}>
                             <div className="usage-box-inner-big">
                               {this.renderUsageCheckContentBig(
                                 normalizedCheck,
-                                color,
+                                usageClass,
                                 icon,
                                 label,
                               )}
@@ -1504,7 +1525,7 @@ export default class Status extends React.Component {
                             <div className="usage-box-inner-small">
                               {this.renderUsageCheckContentSmall(
                                 normalizedCheck,
-                                color,
+                                usageClass,
                                 icon,
                                 label,
                               )}
@@ -1513,27 +1534,28 @@ export default class Status extends React.Component {
                         );
                       })}
                     </div>
-                    {userChecks[0]?.reset &&
-                      this.getResetTimeRemaining(userChecks[0].reset) && (
-                        <div className="usage-reset-info">
-                          {`*${t`DAILY_LIMITS_RESET_IN`} ${this.getResetTimeRemaining(userChecks[0].reset)}`}
-                        </div>
-                      )}
+                    {usageResetTime && (
+                      <div className="usage-reset-info usage-overview-reset-info">
+                        *{t`DAILY_LIMITS_RESET_IN`} {usageResetTime}
+                      </div>
+                    )}
                   </div>
                 )}
                 {warningMessage && (
                   <p className="important">
+                    {/* disable ttag */}
                     <strong>{gettext(warningMessage)}</strong>
+                    {/* enable ttag */}
                   </p>
                 )}
                 {settings.subscriptions &&
                   (userPlan.is_free || planExhausted) &&
                   showUpgradeBtn && (
-                    <p>
+                    <p className="usage-upgrade">
                       <button
                         id="plan-upgrade-btn"
                         type="button"
-                        className="button partial"
+                        className="button full"
                         onClick={this.toggleUpgradePlanModal}
                       >
                         {t`PLAN_UPGRADE_BTN_TXT`}
