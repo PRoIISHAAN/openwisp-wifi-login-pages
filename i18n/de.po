@@ -189,6 +189,12 @@ msgstr "Automatische Authentifizierung beim nächsten Mal?"
 msgid "CURRENT_SUBSCRIPTION_TXT"
 msgstr "Aktuelles Abonnement:"
 
+#: client/components/status/status.js:1257
+msgid "USAGE_LIMIT_EXHAUSTED_TXT"
+msgstr ""
+"Sie haben den verfügbaren Datenverkehr ausgeschöpft. Führen Sie ein Upgrade "
+"durch, um den Dienst weiterhin nutzen zu können."
+
 #: client/components/status/status.js:1570
 msgid "PLAN_UPGRADE_BTN_TXT"
 msgstr "Aktualisierung"

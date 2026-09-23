@@ -192,6 +192,12 @@ msgstr "Autenticarsi automaticamente la prossima volta?"
 msgid "CURRENT_SUBSCRIPTION_TXT"
 msgstr "Abbonamento attuale:"
 
+#: client/components/status/status.js:1257
+msgid "USAGE_LIMIT_EXHAUSTED_TXT"
+msgstr ""
+"Hai esaurito il traffico disponibile. Effettua una ricarica per continuare a "
+"utilizzare il servizio."
+
 #: client/components/status/status.js:1570
 msgid "PLAN_UPGRADE_BTN_TXT"
 msgstr "Ricarica"

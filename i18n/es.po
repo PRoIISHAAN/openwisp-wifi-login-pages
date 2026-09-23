@@ -198,6 +198,11 @@ msgstr "¿Quieres iniciar sesión automáticamente la próxima vez?"
 msgid "CURRENT_SUBSCRIPTION_TXT"
 msgstr "Suscripción actual:"
 
+#: client/components/status/status.js:1257
+msgid "USAGE_LIMIT_EXHAUSTED_TXT"
+msgstr ""
+"Has agotado el tráfico disponible. Actualiza para seguir usando el servicio."
+
 #: client/components/status/status.js:1570
 msgid "PLAN_UPGRADE_BTN_TXT"
 msgstr "Actualizar"

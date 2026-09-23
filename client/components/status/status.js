@@ -73,6 +73,12 @@ const getUsageNumber = (value) => {
   return Number.isFinite(number) ? number : null;
 };
 
+function getDynamicTranslation(message) {
+  /* disable ttag */
+  return gettext(message);
+  /* enable ttag */
+}
+
 export default class Status extends React.Component {
   constructor(props) {
     super(props);
@@ -679,9 +685,7 @@ export default class Status extends React.Component {
         logout(cookies, orgSlug);
       }
       if (reply && !toast.isActive(mainToastId)) {
-        /* disable ttag */
-        toast.error(gettext(reply));
-        /* enable ttag */
+        toast.error(getDynamicTranslation(reply));
       }
       if (macaddr) {
         cookies.set(`${orgSlug}_macaddr`, macaddr, {path: "/"});
@@ -795,9 +799,7 @@ export default class Status extends React.Component {
       case "authMessage":
         setLoading(true);
         toast.dismiss();
-        /* disable ttag */
-        toast.info(gettext(message), {toastId: mainToastId});
-        /* enable ttag */
+        toast.info(getDynamicTranslation(message), {toastId: mainToastId});
         this.setStateSafe(
           {
             warningMessage: warningMessage || "USAGE_LIMIT_EXHAUSTED_TXT",
@@ -813,12 +815,10 @@ export default class Status extends React.Component {
       case "authError":
         setLoading(true);
         toast.dismiss();
-        /* disable ttag */
-        toast.error(gettext(message), {
+        toast.error(getDynamicTranslation(message), {
           autoClose: 10000,
           toastId: mainToastId,
         });
-        /* enable ttag */
         this.setStateSafe({loggedOut: true}, () => {
           // Logout after state update and a small delay
           // The delay ensures the component has sufficient time to unmount
@@ -1253,10 +1253,12 @@ export default class Status extends React.Component {
   };
 
   // eslint-disable-next-line class-methods-use-this
-  getWarningMessage = (message) =>
-    /* disable ttag */
-    gettext(message);
-  /* enable ttag */
+  getWarningMessage = (message) => {
+    if (message === "USAGE_LIMIT_EXHAUSTED_TXT") {
+      return t`USAGE_LIMIT_EXHAUSTED_TXT`;
+    }
+    return getDynamicTranslation(message);
+  };
 
   // eslint-disable-next-line class-methods-use-this
   getUsageClass = (value, result) => {

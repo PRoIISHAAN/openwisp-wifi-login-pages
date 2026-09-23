@@ -192,6 +192,11 @@ msgstr "Do you want to automatically log in the next time?"
 msgid "CURRENT_SUBSCRIPTION_TXT"
 msgstr "Current subscription:"
 
+#: client/components/status/status.js:1257
+msgid "USAGE_LIMIT_EXHAUSTED_TXT"
+msgstr ""
+"You have reached your data limit. Please top up your account to continue."
+
 #: client/components/status/status.js:1570
 msgid "PLAN_UPGRADE_BTN_TXT"
 msgstr "Top up"

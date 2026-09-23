@@ -192,6 +192,12 @@ msgstr "Autenticâsi in maniere automatiche la prossime volte?"
 msgid "CURRENT_SUBSCRIPTION_TXT"
 msgstr "Sotons abonament:"
 
+#: client/components/status/status.js:1257
+msgid "USAGE_LIMIT_EXHAUSTED_TXT"
+msgstr ""
+"Tu âs consumât il trafic disponibil. Fâ l'aggiornament par continuâ a doprâ "
+"il servizi."
+
 #: client/components/status/status.js:1570
 msgid "PLAN_UPGRADE_BTN_TXT"
 msgstr "Potenziament"
