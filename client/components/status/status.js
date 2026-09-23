@@ -1369,12 +1369,11 @@ export default class Status extends React.Component {
 
   // eslint-disable-next-line class-methods-use-this
   renderUsageCheckUnavailable = (usageClass, icon, label) => (
-    <div className={`usage-check-content usage-check-unavailable ${usageClass}`}>
+    <div
+      className={`usage-check-content usage-check-unavailable ${usageClass}`}
+    >
       <div className="usage-check-header">
-        <span
-          aria-hidden="true"
-          className={`usage-check-icon ${icon}-icon`}
-        />
+        <span aria-hidden="true" className={`usage-check-icon ${icon}-icon`} />
         <div>{label}</div>
       </div>
       <div>{t`USAGE_UNAVAILABLE`}</div>
@@ -1456,7 +1455,7 @@ export default class Status extends React.Component {
           {statusPage.radius_usage_enabled &&
             showRadiusUsage &&
             !internetMode && (
-            <div className="usage-overview bg row limit-info">
+              <div className="usage-overview bg row limit-info">
                 {settings.subscriptions && userPlan.name && (
                   <h3>{`${t`CURRENT_SUBSCRIPTION_TXT`} ${userPlan.name}`}</h3>
                 )}
@@ -1482,7 +1481,8 @@ export default class Status extends React.Component {
                           valueNum,
                           resultNum,
                         );
-                        const icon = check.type === "seconds" ? "timer" : "data";
+                        const icon =
+                          check.type === "seconds" ? "timer" : "data";
                         const label =
                           check.type === "seconds"
                             ? t`USAGE_TIME`
