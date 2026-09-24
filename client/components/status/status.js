@@ -6,10 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import PropTypes from "prop-types";
 import React from "react";
-import {
-  CircularProgressbarWithChildren,
-  buildStyles,
-} from "react-circular-progressbar";
+import {CircularProgressbarWithChildren} from "react-circular-progressbar";
 import {Cookies} from "react-cookie";
 import {Link} from "react-router-dom";
 import {toast} from "react-toastify";
@@ -1300,12 +1297,6 @@ export default class Status extends React.Component {
               strokeWidth={12}
               value={check.result}
               maxValue={check.value}
-              styles={buildStyles({
-                pathColor: "var(--usage-color)",
-                trailColor: "#EAECF0",
-                strokeLinecap: "butt",
-                pathTransitionDuration: 0.5,
-              })}
               aria-label={label}
             >
               <div className="usage-progress-text">
@@ -1356,7 +1347,6 @@ export default class Status extends React.Component {
               aria-valuenow={Math.min(check.result, check.value)}
               style={{
                 width: `${Math.min(percentage, 100)}%`,
-                backgroundColor: "var(--usage-color)",
               }}
             />
           </div>
@@ -1465,109 +1455,125 @@ export default class Status extends React.Component {
           {statusPage.radius_usage_enabled &&
             showRadiusUsage &&
             !internetMode && (
-              <div className="usage-overview bg row limit-info">
-                {settings.subscriptions && userPlan.name && (
-                  <h3>{`${t`CURRENT_SUBSCRIPTION_TXT`} ${userPlan.name}`}</h3>
-                )}
-                <div className="usage-overview-title">{t`USAGE_OVERVIEW`}</div>
-                <p>{t`USAGE_OVERVIEW_DESCRIPTION`}</p>
-                {radiusUsageSpinner ? this.getSpinner() : null}
-                {userChecks && (
-                  <div className="usage-details">
-                    <div className="usage-checks-container">
-                      {userChecks.map((check) => {
-                        const valueNum = getUsageNumber(check.value);
-                        const resultNum = getUsageNumber(check.result);
-                        if (
-                          valueNum === null ||
-                          valueNum <= 0 ||
-                          !["seconds", "bytes"].includes(check.type)
-                        ) {
-                          return null;
-                        }
-                        const usageClass = this.getUsageClass(
-                          valueNum,
-                          resultNum,
-                        );
-                        const icon =
-                          check.type === "seconds" ? "timer" : "data";
-                        const label =
-                          check.type === "seconds"
-                            ? t`USAGE_TIME`
-                            : t`USAGE_DATA`;
-                        if (resultNum === null) {
-                          return (
-                            <React.Fragment key={check.attribute}>
-                              <div className="usage-box-inner-big">
-                                {this.renderUsageCheckUnavailable(
-                                  usageClass,
-                                  icon,
-                                  label,
-                                )}
-                              </div>
-                              <div className="usage-box-inner-small">
-                                {this.renderUsageCheckUnavailable(
-                                  usageClass,
-                                  icon,
-                                  label,
-                                )}
-                              </div>
-                            </React.Fragment>
-                          );
-                        }
-                        const normalizedCheck = {
-                          ...check,
-                          value: valueNum,
-                          result: resultNum,
-                        };
-                        return (
-                          <React.Fragment key={check.attribute}>
-                            <div className="usage-box-inner-big">
-                              {this.renderUsageCheckContentBig(
-                                normalizedCheck,
-                                usageClass,
-                                icon,
-                                label,
-                              )}
-                            </div>
-                            <div className="usage-box-inner-small">
-                              {this.renderUsageCheckContentSmall(
-                                normalizedCheck,
-                                usageClass,
-                                icon,
-                                label,
-                              )}
-                            </div>
-                          </React.Fragment>
-                        );
-                      })}
-                    </div>
-                    {usageResetTime && (
-                      <div className="usage-reset-info usage-overview-reset-info">
-                        *{t`USAGE_LIMITS_RESET_IN`} {usageResetTime}
+              <div
+                className={`usage-overview bg row limit-info${
+                  radiusUsageSpinner ? " usage-overview-loading" : ""
+                }`}
+              >
+                {radiusUsageSpinner ? (
+                  <div className="usage-overview-loader">
+                    {this.getSpinner()}
+                  </div>
+                ) : (
+                  <>
+                    <div className="usage-overview-title">{t`USAGE_OVERVIEW`}</div>
+                    {settings.subscriptions && userPlan.name && (
+                      <p className="usage-overview-subscription">
+                        {t`CURRENT_SUBSCRIPTION_TXT`}
+                        {"\u00a0"}
+                        <strong>{userPlan.name}</strong>
+                      </p>
+                    )}
+                    {userChecks && (
+                      <div className="usage-details">
+                        <div className="usage-checks-container">
+                          {userChecks.map((check) => {
+                            const valueNum = getUsageNumber(check.value);
+                            const resultNum = getUsageNumber(check.result);
+                            if (
+                              valueNum === null ||
+                              valueNum <= 0 ||
+                              !["seconds", "bytes"].includes(check.type)
+                            ) {
+                              return null;
+                            }
+                            const usageClass = this.getUsageClass(
+                              valueNum,
+                              resultNum,
+                            );
+                            const icon =
+                              check.type === "seconds" ? "timer" : "data";
+                            const label =
+                              check.type === "seconds"
+                                ? t`USAGE_TIME`
+                                : t`USAGE_DATA`;
+                            if (resultNum === null) {
+                              return (
+                                <React.Fragment key={check.attribute}>
+                                  <div className="usage-box-inner-big">
+                                    {this.renderUsageCheckUnavailable(
+                                      usageClass,
+                                      icon,
+                                      label,
+                                    )}
+                                  </div>
+                                  <div className="usage-box-inner-small">
+                                    {this.renderUsageCheckUnavailable(
+                                      usageClass,
+                                      icon,
+                                      label,
+                                    )}
+                                  </div>
+                                </React.Fragment>
+                              );
+                            }
+                            const normalizedCheck = {
+                              ...check,
+                              value: valueNum,
+                              result: resultNum,
+                            };
+                            return (
+                              <React.Fragment key={check.attribute}>
+                                <div className="usage-box-inner-big">
+                                  {this.renderUsageCheckContentBig(
+                                    normalizedCheck,
+                                    usageClass,
+                                    icon,
+                                    label,
+                                  )}
+                                </div>
+                                <div className="usage-box-inner-small">
+                                  {this.renderUsageCheckContentSmall(
+                                    normalizedCheck,
+                                    usageClass,
+                                    icon,
+                                    label,
+                                  )}
+                                </div>
+                              </React.Fragment>
+                            );
+                          })}
+                        </div>
+                        {usageResetTime && (
+                          <div className="usage-reset-info">
+                            {t`USAGE_LIMITS_RESET_IN`} {usageResetTime}
+                          </div>
+                        )}
                       </div>
                     )}
-                  </div>
+                    {warningMessage && (
+                      <p className="important">
+                        <strong>
+                          {this.getWarningMessage(warningMessage)}
+                        </strong>
+                      </p>
+                    )}
+                    {settings.subscriptions &&
+                      (userPlan.is_free || planExhausted) &&
+                      showUpgradeBtn && (
+                        <p className="usage-upgrade">
+                          <button
+                            id="plan-upgrade-btn"
+                            type="button"
+                            className="button full"
+                            onClick={this.toggleUpgradePlanModal}
+                          >
+                            {t`PLAN_UPGRADE_BTN_TXT`}
+                          </button>
+                        </p>
+                      )}
+                  </>
                 )}
-                {warningMessage && (
-                  <p className="important">
-                    <strong>{this.getWarningMessage(warningMessage)}</strong>
-                  </p>
-                )}
-                {settings.subscriptions &&
-                  (userPlan.is_free || planExhausted) &&
-                  showUpgradeBtn && (
-                    <p className="usage-upgrade">
-                      <button
-                        id="plan-upgrade-btn"
-                        type="button"
-                        className="button full"
-                        onClick={this.toggleUpgradePlanModal}
-                      >
-                        {t`PLAN_UPGRADE_BTN_TXT`}
-                      </button>
-                    </p>
-                  )}
               </div>
             )}
           <div className="inner">

@@ -140,6 +140,14 @@ progress + p.progress {
   align-items: start;
 }
 
+.usage-overview-loader {
+  display: flex;
+  width: 100%;
+  min-height: 320px;
+  align-items: center;
+  justify-content: center;
+}
+
 .usage-overview-title {
   margin: 0;
   font-weight: 600;
@@ -148,13 +156,7 @@ progress + p.progress {
 }
 
 .usage-overview > p {
-  margin: 4px 0 0;
   text-align: left;
-}
-
-.usage-overview > h3 {
-  font-size: 24px;
-  line-height: 30px;
 }
 
 .usage-details {
@@ -162,11 +164,11 @@ progress + p.progress {
 }
 
 .usage-checks-container {
-  margin: 24px 0 0;
+  margin: 16px 0 0;
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 24px;
+  gap: 16px;
 }
 
 .usage-box-inner-small {
@@ -184,9 +186,8 @@ progress + p.progress {
 .usage-box-inner-big {
   display: flex;
   width: 100%;
-  height: 92px;
   flex-direction: column;
-  padding: 8px 12px;
+  padding: 24px;
   box-sizing: border-box;
   align-items: start;
   justify-content: center;
@@ -202,15 +203,21 @@ progress + p.progress {
 }
 
 .usage-low {
-  --usage-color: #1aaa55;
+  --usage-icon-color: #0e5a2d;
+  --usage-icon-background-color: #dcf5e7;
+  --usage-progress-color: #1aaa55;
 }
 
 .usage-medium {
-  --usage-color: #fbbf24;
+  --usage-icon-color: #92400e;
+  --usage-icon-background-color: #fef3c7;
+  --usage-progress-color: #fbbf24;
 }
 
 .usage-high {
-  --usage-color: #db3b21;
+  --usage-icon-color: #b91c1c;
+  --usage-icon-background-color: #fecaca;
+  --usage-progress-color: #db3b21;
 }
 
 .usage-check-header {
@@ -230,7 +237,7 @@ progress + p.progress {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background-color: color-mix(in srgb, var(--usage-color) 14%, white);
+  background-color: var(--usage-icon-background-color);
 }
 
 .usage-check-icon::before {
@@ -238,7 +245,7 @@ progress + p.progress {
   display: block;
   width: 16px;
   height: 16px;
-  background-color: var(--usage-color);
+  background-color: var(--usage-icon-color);
   mask-position: center;
   mask-repeat: no-repeat;
   mask-size: contain;
@@ -288,9 +295,20 @@ progress + p.progress {
 
 .usage-progress-bar-fill {
   height: 100%;
+  background-color: var(--usage-progress-color);
   border-radius: 8px;
   transition: width 0.5s ease;
   min-width: 0;
+}
+
+.usage-progress-wrapper .CircularProgressbar .CircularProgressbar-path {
+  stroke: var(--usage-progress-color);
+  stroke-linecap: butt;
+}
+
+.usage-progress-wrapper .CircularProgressbar .CircularProgressbar-trail {
+  stroke: #eaecf0;
+  stroke-linecap: butt;
 }
 
 .usage-progress-text {
@@ -332,13 +350,10 @@ progress + p.progress {
 }
 
 .usage-reset-info {
-  font-size: 12px;
+  font-size: inherit;
   line-height: 24px;
-}
-
-.usage-overview-reset-info {
-  margin: 10px 8px 0;
-  text-align: left;
+  margin: 10px 0 0;
+  text-align: right;
 }
 
 .usage-overview > .usage-upgrade {
@@ -348,26 +363,39 @@ progress + p.progress {
   margin: 12px 0 0;
 }
 
+@media screen and (min-width: 768px) {
+  .usage-overview {
+    padding: 24px;
+  }
+
+  .usage-overview > .usage-upgrade > .button {
+    display: inline-block;
+    width: auto;
+    padding: 8px 16px;
+  }
+}
+
 @media screen and (max-width: 767px) {
   .usage-overview {
     margin: 0 0 20px;
   }
 
   .usage-checks-container {
-    margin-top: 28px;
+    margin-top: 16px;
+    gap: 16px;
   }
 
   .usage-check-header {
     font-size: 18px;
   }
 
-  .usage-overview-reset-info {
+  .usage-reset-info {
     width: 100%;
-    margin: 10px 0 0;
+    text-align: left;
   }
 }
 
-@media screen and (max-width: 575px) {
+@media screen and (max-width: 399.98px) {
   .usage-checks-container {
     flex-direction: row;
     gap: 16px;
@@ -376,6 +404,8 @@ progress + p.progress {
 
   .usage-box-inner-small {
     display: flex;
+    height: auto;
+    min-height: 304px;
   }
 
   .usage-box-inner-big {
@@ -384,6 +414,21 @@ progress + p.progress {
 
   .usage-check-content {
     gap: 13px;
+  }
+
+  .usage-progress-wrapper {
+    width: 200px;
+    height: 200px;
+    flex-basis: 200px;
+  }
+
+  .usage-box-inner-small .usage-progress-details {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .usage-box-inner-small .usage-check-used {
+    flex: 0;
   }
 }
 

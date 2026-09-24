@@ -292,7 +292,7 @@ describe("<Status /> usage rendering helpers", () => {
       expect(progressbar.exists()).toBe(true);
       expect(progressbar.prop("value")).toBe(5400);
       expect(progressbar.prop("maxValue")).toBe("10800");
-      expect(progressbar.prop("styles").path.stroke).toBe("var(--usage-color)");
+      expect(progressbar.prop("styles")).toBeUndefined();
     });
   });
   it("should render the horizontal usage content in all color zones", () => {
@@ -326,7 +326,6 @@ describe("<Status /> usage rendering helpers", () => {
       );
       expect(element.find(".usage-progress-bar-fill").prop("style")).toEqual({
         width: "50%",
-        backgroundColor: "var(--usage-color)",
       });
       expect(element.find(".usage-progress-summary-used").text()).toContain(
         "USAGE_USED_OF",
@@ -398,7 +397,6 @@ describe("<Status /> usage rendering helpers", () => {
     );
     expect(element.find(".usage-progress-bar-fill").prop("style")).toEqual({
       width: "75%",
-      backgroundColor: "var(--usage-color)",
     });
   });
 
@@ -439,11 +437,62 @@ describe("<Status /> usage rendering helpers", () => {
     expect(component.find(".usage-overview-title").text()).toBe(
       "USAGE_OVERVIEW",
     );
+    expect(component.text()).not.toContain("USAGE_OVERVIEW_DESCRIPTION");
     expect(component.find(".usage-reset-info")).toHaveLength(1);
     expect(component.find(".usage-reset-info").text()).toBe(
-      "*USAGE_LIMITS_RESET_IN 2TIME_HOUR_ABBR\u00a030TIME_MINUTE_ABBR",
+      "USAGE_LIMITS_RESET_IN 2TIME_HOUR_ABBR\u00a030TIME_MINUTE_ABBR",
     );
     dateSpy.mockRestore();
+  });
+
+  it("should render the subscription as bold text below the usage overview", () => {
+    const prop = createTestProps();
+    prop.settings.subscriptions = true;
+    prop.statusPage.radius_usage_enabled = true;
+    const component = shallow(<Status {...prop} />, {
+      context: {setLoading: jest.fn()},
+      disableLifecycleMethods: true,
+    });
+    component.setState({
+      radiusUsageSpinner: false,
+      userPlan: {name: "Premium"},
+    });
+    expect(component.find(".usage-overview h3")).toHaveLength(0);
+    expect(component.find(".usage-overview-subscription").text()).toBe(
+      "CURRENT_SUBSCRIPTION_TXT\u00a0Premium",
+    );
+    expect(component.find(".usage-overview-subscription strong").text()).toBe(
+      "Premium",
+    );
+  });
+
+  it("should use the shared full button class for the upgrade action", () => {
+    const prop = createTestProps();
+    prop.settings.subscriptions = true;
+    prop.statusPage.radius_usage_enabled = true;
+    const component = shallow(<Status {...prop} />, {
+      context: {setLoading: jest.fn()},
+      disableLifecycleMethods: true,
+    });
+    component.setState({
+      radiusUsageSpinner: false,
+      showUpgradeBtn: true,
+      userPlan: {is_free: true},
+    });
+    expect(component.find("#plan-upgrade-btn").hasClass("full")).toBe(true);
+  });
+
+  it("should center the loader in the usage overview while usage data loads", () => {
+    const prop = createTestProps();
+    prop.statusPage.radius_usage_enabled = true;
+    const component = shallow(<Status {...prop} />, {
+      context: {setLoading: jest.fn()},
+      disableLifecycleMethods: true,
+    });
+    expect(component.find(".usage-overview")).toHaveLength(1);
+    expect(component.find(".usage-overview-loading")).toHaveLength(1);
+    expect(component.find(".usage-overview-loader")).toHaveLength(1);
+    expect(component.find(".usage-overview-title")).toHaveLength(0);
   });
 
   it("should format reset times longer than a day with days", () => {
@@ -600,6 +649,38 @@ describe("<Status /> usage rendering helpers", () => {
       warningMessage: "USAGE_LIMIT_EXHAUSTED_TXT",
     });
     expect(component.find(".important strong").text()).toBe(translatedWarning);
+  });
+
+  it("should use a static translation for the default warning message", () => {
+    const translatedWarning = "Translated default warning";
+    jest.isolateModules(() => {
+      jest.doMock("ttag", () => ({
+        t: (strings, ...values) => {
+          const text = String.raw({raw: strings}, ...values);
+          return text === "USAGE_LIMIT_EXHAUSTED_TXT"
+            ? translatedWarning
+            : text;
+        },
+        gettext: (text) => text,
+        addLocale: jest.fn(),
+        useLocale: jest.fn(),
+      }));
+      // eslint-disable-next-line global-require
+      const StatusWithMockedTtag = require("./status").default;
+      const prop = createTestProps();
+      prop.statusPage.radius_usage_enabled = true;
+      const component = shallow(<StatusWithMockedTtag {...prop} />, {
+        context: {setLoading: jest.fn()},
+        disableLifecycleMethods: true,
+      });
+      component.setState({
+        radiusUsageSpinner: false,
+        warningMessage: "USAGE_LIMIT_EXHAUSTED_TXT",
+      });
+      expect(component.find(".important strong").text()).toBe(
+        translatedWarning,
+      );
+    });
   });
 
   it("should skip empty status content lines", () => {

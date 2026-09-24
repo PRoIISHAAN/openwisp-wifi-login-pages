@@ -28,9 +28,6 @@ exports[`<Status /> interactions should hide check if check.value is zero 1`] = 
       >
         USAGE_OVERVIEW
       </div>
-      <p>
-        USAGE_OVERVIEW_DESCRIPTION
-      </p>
       <div
         className="usage-details"
       >
@@ -69,7 +66,6 @@ exports[`<Status /> interactions should hide check if check.value is zero 1`] = 
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "0%",
                       }
                     }
@@ -122,22 +118,6 @@ exports[`<Status /> interactions should hide check if check.value is zero 1`] = 
                     id="Max-Daily-Session"
                     maxValue={10800}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={0}
                   >
                     <div
@@ -489,9 +469,6 @@ exports[`<Status /> interactions should show user's radius usage 1`] = `
       >
         USAGE_OVERVIEW
       </div>
-      <p>
-        USAGE_OVERVIEW_DESCRIPTION
-      </p>
       <div
         className="usage-details"
       >
@@ -530,7 +507,6 @@ exports[`<Status /> interactions should show user's radius usage 1`] = `
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "0%",
                       }
                     }
@@ -583,22 +559,6 @@ exports[`<Status /> interactions should show user's radius usage 1`] = `
                     id="Max-Daily-Session"
                     maxValue={10800}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={0}
                   >
                     <div
@@ -656,7 +616,6 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "0%",
                       }
                     }
@@ -709,22 +668,6 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                     id="Max-Daily-Session-Traffic"
                     maxValue={3000000000}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={0}
                   >
                     <div
@@ -928,16 +871,19 @@ exports[`<Status /> interactions subscriptions: should hide checks and show upgr
     <div
       className="usage-overview bg row limit-info"
     >
-      <h3>
-        CURRENT_SUBSCRIPTION_TXT Premium
-      </h3>
       <div
         className="usage-overview-title"
       >
         USAGE_OVERVIEW
       </div>
-      <p>
-        USAGE_OVERVIEW_DESCRIPTION
+      <p
+        className="usage-overview-subscription"
+      >
+        CURRENT_SUBSCRIPTION_TXT
+         
+        <strong>
+          Premium
+        </strong>
       </p>
       <div
         className="usage-details"
@@ -1123,16 +1069,19 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
     <div
       className="usage-overview bg row limit-info"
     >
-      <h3>
-        CURRENT_SUBSCRIPTION_TXT Premium
-      </h3>
       <div
         className="usage-overview-title"
       >
         USAGE_OVERVIEW
       </div>
-      <p>
-        USAGE_OVERVIEW_DESCRIPTION
+      <p
+        className="usage-overview-subscription"
+      >
+        CURRENT_SUBSCRIPTION_TXT
+         
+        <strong>
+          Premium
+        </strong>
       </p>
       <div
         className="usage-details"
@@ -1172,7 +1121,6 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "99.07407407407408%",
                       }
                     }
@@ -1225,22 +1173,6 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                     id="Max-Daily-Session"
                     maxValue={10800}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={10700}
                   >
                     <div
@@ -1298,7 +1230,6 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "100%",
                       }
                     }
@@ -1351,22 +1282,6 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                     id="Max-Daily-Session-Traffic"
                     maxValue={3000000000}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={3000000000}
                   >
                     <div
@@ -1653,16 +1568,19 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
     <div
       className="usage-overview bg row limit-info"
     >
-      <h3>
-        CURRENT_SUBSCRIPTION_TXT Premium
-      </h3>
       <div
         className="usage-overview-title"
       >
         USAGE_OVERVIEW
       </div>
-      <p>
-        USAGE_OVERVIEW_DESCRIPTION
+      <p
+        className="usage-overview-subscription"
+      >
+        CURRENT_SUBSCRIPTION_TXT
+         
+        <strong>
+          Premium
+        </strong>
       </p>
       <div
         className="usage-details"
@@ -1702,7 +1620,6 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "99.07407407407408%",
                       }
                     }
@@ -1755,22 +1672,6 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                     id="Max-Daily-Session"
                     maxValue={10800}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={10700}
                   >
                     <div
@@ -1828,7 +1729,6 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "100%",
                       }
                     }
@@ -1881,22 +1781,6 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                     id="Max-Daily-Session-Traffic"
                     maxValue={3000000000}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={3000000000}
                   >
                     <div
@@ -2101,16 +1985,19 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
     <div
       className="usage-overview bg row limit-info"
     >
-      <h3>
-        CURRENT_SUBSCRIPTION_TXT Free
-      </h3>
       <div
         className="usage-overview-title"
       >
         USAGE_OVERVIEW
       </div>
-      <p>
-        USAGE_OVERVIEW_DESCRIPTION
+      <p
+        className="usage-overview-subscription"
+      >
+        CURRENT_SUBSCRIPTION_TXT
+         
+        <strong>
+          Free
+        </strong>
       </p>
       <div
         className="usage-details"
@@ -2150,7 +2037,6 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "99.07407407407408%",
                       }
                     }
@@ -2203,22 +2089,6 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                     id="Max-Daily-Session"
                     maxValue={10800}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={10700}
                   >
                     <div
@@ -2276,7 +2146,6 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "100%",
                       }
                     }
@@ -2329,22 +2198,6 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                     id="Max-Daily-Session-Traffic"
                     maxValue={3000000000}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={3000000000}
                   >
                     <div
@@ -2631,16 +2484,19 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
     <div
       className="usage-overview bg row limit-info"
     >
-      <h3>
-        CURRENT_SUBSCRIPTION_TXT Free
-      </h3>
       <div
         className="usage-overview-title"
       >
         USAGE_OVERVIEW
       </div>
-      <p>
-        USAGE_OVERVIEW_DESCRIPTION
+      <p
+        className="usage-overview-subscription"
+      >
+        CURRENT_SUBSCRIPTION_TXT
+         
+        <strong>
+          Free
+        </strong>
       </p>
       <div
         className="usage-details"
@@ -2680,7 +2536,6 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "99.07407407407408%",
                       }
                     }
@@ -2733,22 +2588,6 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                     id="Max-Daily-Session"
                     maxValue={10800}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={10700}
                   >
                     <div
@@ -2806,7 +2645,6 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                     role="progressbar"
                     style={
                       {
-                        "backgroundColor": "var(--usage-color)",
                         "width": "100%",
                       }
                     }
@@ -2859,22 +2697,6 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                     id="Max-Daily-Session-Traffic"
                     maxValue={3000000000}
                     strokeWidth={12}
-                    styles={
-                      {
-                        "background": {},
-                        "path": {
-                          "stroke": "var(--usage-color)",
-                          "strokeLinecap": "butt",
-                          "transitionDuration": "0.5s",
-                        },
-                        "root": {},
-                        "text": {},
-                        "trail": {
-                          "stroke": "#EAECF0",
-                          "strokeLinecap": "butt",
-                        },
-                      }
-                    }
                     value={3000000000}
                   >
                     <div
@@ -3077,25 +2899,14 @@ exports[`<Status /> rendering should render correctly 1`] = `
     id="status"
   >
     <div
-      className="usage-overview bg row limit-info"
+      className="usage-overview bg row limit-info usage-overview-loading"
     >
       <div
-        className="usage-overview-title"
+        className="usage-overview-loader"
       >
-        USAGE_OVERVIEW
-      </div>
-      <p>
-        USAGE_OVERVIEW_DESCRIPTION
-      </p>
-      <loader
-        full={false}
-        small={true}
-      />
-      <div
-        className="usage-details"
-      >
-        <div
-          className="usage-checks-container"
+        <loader
+          full={false}
+          small={true}
         />
       </div>
     </div>
@@ -3254,25 +3065,14 @@ exports[`<Status /> rendering with placeholder translation tags should render tr
     id="status"
   >
     <div
-      className="usage-overview bg row limit-info"
+      className="usage-overview bg row limit-info usage-overview-loading"
     >
       <div
-        className="usage-overview-title"
+        className="usage-overview-loader"
       >
-        USAGE_OVERVIEW
-      </div>
-      <p>
-        USAGE_OVERVIEW_DESCRIPTION
-      </p>
-      <loader
-        full={false}
-        small={true}
-      />
-      <div
-        className="usage-details"
-      >
-        <div
-          className="usage-checks-container"
+        <loader
+          full={false}
+          small={true}
         />
       </div>
     </div>
