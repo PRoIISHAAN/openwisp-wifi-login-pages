@@ -1307,7 +1307,7 @@ export default class Status extends React.Component {
               </div>
             </CircularProgressbarWithChildren>
           </div>
-          <div className={`usage-check-used usage-check-used-${check.type}`}>
+          <div className="usage-check-used">
             {this.getUserCheckUsedValue(
               check.value,
               check.type,
@@ -1455,11 +1455,7 @@ export default class Status extends React.Component {
           {statusPage.radius_usage_enabled &&
             showRadiusUsage &&
             !internetMode && (
-              <div
-                className={`usage-overview bg row limit-info${
-                  radiusUsageSpinner ? " usage-overview-loading" : ""
-                }`}
-              >
+              <div className="usage-overview bg row">
                 {radiusUsageSpinner ? (
                   <div className="usage-overview-loader">
                     {this.getSpinner()}

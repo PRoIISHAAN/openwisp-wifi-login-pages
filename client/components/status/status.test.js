@@ -490,7 +490,6 @@ describe("<Status /> usage rendering helpers", () => {
       disableLifecycleMethods: true,
     });
     expect(component.find(".usage-overview")).toHaveLength(1);
-    expect(component.find(".usage-overview-loading")).toHaveLength(1);
     expect(component.find(".usage-overview-loader")).toHaveLength(1);
     expect(component.find(".usage-overview-title")).toHaveLength(0);
   });
@@ -2892,7 +2891,7 @@ describe("<Status /> interactions", () => {
     await tick();
     expect(toast.error.mock.calls.length).toBe(1);
   });
-  it("should hide limit-info element if getUserRadiusUsage fails", async () => {
+  it("should stop showing the usage loader if getUserRadiusUsage returns 500", async () => {
     validateToken.mockReturnValue(true);
     axios.mockImplementation(() =>
       Promise.reject({
@@ -2910,9 +2909,9 @@ describe("<Status /> interactions", () => {
       context: {setLoading: jest.fn()},
     });
     await tick();
-    expect(wrapper.find(".limit-info").exists()).toBe(false);
+    expect(wrapper.find(".usage-overview-loader").exists()).toBe(false);
   });
-  it("should hide limit-info element if user plan has no checks", async () => {
+  it("should hide the usage overview if user plan has no checks", async () => {
     validateToken.mockReturnValue(true);
     axios
       // Response for getUserRadiusSessions
@@ -2944,7 +2943,7 @@ describe("<Status /> interactions", () => {
       context: {setLoading: jest.fn()},
     });
     await tick();
-    expect(wrapper.find(".limit-info").exists()).toBe(false);
+    expect(wrapper.find(".usage-overview").exists()).toBe(false);
   });
   it("should show user's radius usage", async () => {
     validateToken.mockReturnValue(true);

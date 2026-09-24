@@ -21,7 +21,7 @@ exports[`<Status /> interactions should hide check if check.value is zero 1`] = 
     id="status"
   >
     <div
-      className="usage-overview bg row limit-info"
+      className="usage-overview bg row"
     >
       <div
         className="usage-overview-title"
@@ -135,7 +135,7 @@ exports[`<Status /> interactions should hide check if check.value is zero 1`] = 
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-seconds"
+                  className="usage-check-used"
                 >
                   TIME_LESS_THAN_MINUTE
 USAGE_USED_OF 3TIME_HOUR_ABBR
@@ -462,7 +462,7 @@ exports[`<Status /> interactions should show user's radius usage 1`] = `
     id="status"
   >
     <div
-      className="usage-overview bg row limit-info"
+      className="usage-overview bg row"
     >
       <div
         className="usage-overview-title"
@@ -576,7 +576,7 @@ exports[`<Status /> interactions should show user's radius usage 1`] = `
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-seconds"
+                  className="usage-check-used"
                 >
                   TIME_LESS_THAN_MINUTE
 USAGE_USED_OF 3TIME_HOUR_ABBR
@@ -685,7 +685,7 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-bytes"
+                  className="usage-check-used"
                 >
                   0 B
 USAGE_USED_OF 3 GB
@@ -869,7 +869,7 @@ exports[`<Status /> interactions subscriptions: should hide checks and show upgr
     id="status"
   >
     <div
-      className="usage-overview bg row limit-info"
+      className="usage-overview bg row"
     >
       <div
         className="usage-overview-title"
@@ -1067,7 +1067,7 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
     id="status"
   >
     <div
-      className="usage-overview bg row limit-info"
+      className="usage-overview bg row"
     >
       <div
         className="usage-overview-title"
@@ -1190,7 +1190,7 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-seconds"
+                  className="usage-check-used"
                 >
                   2TIME_HOUR_ABBR 58TIME_MINUTE_ABBR
 USAGE_USED_OF 3TIME_HOUR_ABBR
@@ -1299,7 +1299,7 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-bytes"
+                  className="usage-check-used"
                 >
                   3 GB
 USAGE_USED_OF 3 GB
@@ -1566,7 +1566,7 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
       toggleModal={[Function]}
     />
     <div
-      className="usage-overview bg row limit-info"
+      className="usage-overview bg row"
     >
       <div
         className="usage-overview-title"
@@ -1689,7 +1689,7 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-seconds"
+                  className="usage-check-used"
                 >
                   2TIME_HOUR_ABBR 58TIME_MINUTE_ABBR
 USAGE_USED_OF 3TIME_HOUR_ABBR
@@ -1798,7 +1798,7 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-bytes"
+                  className="usage-check-used"
                 >
                   3 GB
 USAGE_USED_OF 3 GB
@@ -1983,7 +1983,7 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
     id="status"
   >
     <div
-      className="usage-overview bg row limit-info"
+      className="usage-overview bg row"
     >
       <div
         className="usage-overview-title"
@@ -2106,7 +2106,7 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-seconds"
+                  className="usage-check-used"
                 >
                   2TIME_HOUR_ABBR 58TIME_MINUTE_ABBR
 USAGE_USED_OF 3TIME_HOUR_ABBR
@@ -2215,7 +2215,7 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-bytes"
+                  className="usage-check-used"
                 >
                   3 GB
 USAGE_USED_OF 3 GB
@@ -2482,7 +2482,7 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
       toggleModal={[Function]}
     />
     <div
-      className="usage-overview bg row limit-info"
+      className="usage-overview bg row"
     >
       <div
         className="usage-overview-title"
@@ -2605,7 +2605,7 @@ exports[`<Status /> interactions subscriptions: should show upgrade option when 
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-seconds"
+                  className="usage-check-used"
                 >
                   2TIME_HOUR_ABBR 58TIME_MINUTE_ABBR
 USAGE_USED_OF 3TIME_HOUR_ABBR
@@ -2714,7 +2714,7 @@ USAGE_USED_OF 3TIME_HOUR_ABBR
                   </CircularProgressbarWithChildren>
                 </div>
                 <div
-                  className="usage-check-used usage-check-used-bytes"
+                  className="usage-check-used"
                 >
                   3 GB
 USAGE_USED_OF 3 GB
@@ -2899,7 +2899,7 @@ exports[`<Status /> rendering should render correctly 1`] = `
     id="status"
   >
     <div
-      className="usage-overview bg row limit-info usage-overview-loading"
+      className="usage-overview bg row"
     >
       <div
         className="usage-overview-loader"
@@ -3065,7 +3065,7 @@ exports[`<Status /> rendering with placeholder translation tags should render tr
     id="status"
   >
     <div
-      className="usage-overview bg row limit-info usage-overview-loading"
+      className="usage-overview bg row"
     >
       <div
         className="usage-overview-loader"

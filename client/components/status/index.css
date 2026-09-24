@@ -90,31 +90,6 @@
 progress + p.progress {
   margin-top: -5px;
 }
-.limit-info {
-  text-align: center;
-  margin-bottom: 15px;
-}
-.limit-info h3 {
-  margin: 0 0 10px;
-}
-.limit-info progress {
-  width: 80%;
-  height: 40px;
-}
-.limit-info p.progress {
-  font-size: 20px;
-}
-.limit-info p:last-child {
-  margin-bottom: 0;
-}
-.limit-info .button {
-  margin-top: 5px;
-}
-.limit-info .important {
-  color: #ba2121f7;
-  margin-top: 15px;
-  line-height: 1.5em;
-}
 #status .plans .intro {
   margin-top: 0px;
   margin-bottom: 15px;
@@ -134,7 +109,8 @@ progress + p.progress {
 }
 
 .usage-overview {
-  padding: 24px 16px;
+  margin: 10px 0 15px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -155,8 +131,14 @@ progress + p.progress {
   line-height: 27px;
 }
 
-.usage-overview > p {
+.usage-overview-subscription {
   text-align: left;
+}
+
+.usage-overview .important {
+  color: #ba2121f7;
+  margin-top: 15px;
+  line-height: 1.5em;
 }
 
 .usage-details {
@@ -268,9 +250,6 @@ progress + p.progress {
   width: 160px;
   height: 160px;
   flex: 0 0 160px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .usage-progress-details {
@@ -323,7 +302,6 @@ progress + p.progress {
 
 .usage-progress-text-bottom {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   margin-top: 8px;
   gap: 2px;
@@ -341,16 +319,11 @@ progress + p.progress {
   text-align: left;
 }
 
-.usage-box-inner-small .usage-check-content {
-  width: 100%;
-}
-
 .usage-box-inner-small .usage-check-used {
   text-align: center;
 }
 
 .usage-reset-info {
-  font-size: inherit;
   line-height: 24px;
   margin: 10px 0 0;
   text-align: right;
@@ -363,45 +336,31 @@ progress + p.progress {
   margin: 12px 0 0;
 }
 
-@media screen and (min-width: 768px) {
-  .usage-overview {
-    padding: 24px;
-  }
-
-  .usage-overview > .usage-upgrade > .button {
-    display: inline-block;
-    width: auto;
-    padding: 8px 16px;
-  }
+.usage-overview > .usage-upgrade > .button {
+  display: inline-block;
+  width: auto;
+  margin-top: 5px;
+  padding: 8px 16px;
 }
 
 @media screen and (max-width: 767px) {
   .usage-overview {
     margin: 0 0 20px;
-  }
-
-  .usage-checks-container {
-    margin-top: 16px;
-    gap: 16px;
-  }
-
-  .usage-check-header {
-    font-size: 18px;
+    padding: 24px 16px;
   }
 
   .usage-reset-info {
-    width: 100%;
     text-align: left;
+  }
+
+  .usage-overview > .usage-upgrade > .button {
+    display: block;
+    width: 100%;
+    padding: 8px 0;
   }
 }
 
 @media screen and (max-width: 399.98px) {
-  .usage-checks-container {
-    flex-direction: row;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
   .usage-box-inner-small {
     display: flex;
     height: auto;
@@ -419,7 +378,7 @@ progress + p.progress {
   .usage-progress-wrapper {
     width: 200px;
     height: 200px;
-    flex-basis: 200px;
+    flex: 0 0 200px;
   }
 
   .usage-box-inner-small .usage-progress-details {
