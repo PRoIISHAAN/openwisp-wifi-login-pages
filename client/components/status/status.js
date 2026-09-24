@@ -1467,7 +1467,7 @@ export default class Status extends React.Component {
                       <p className="usage-overview-subscription">
                         {t`CURRENT_SUBSCRIPTION_TXT`}
                         {"\u00a0"}
-                        <strong>{userPlan.name}</strong>
+                        <strong>{getDynamicTranslation(userPlan.name)}</strong>
                       </p>
                     )}
                     {userChecks && (

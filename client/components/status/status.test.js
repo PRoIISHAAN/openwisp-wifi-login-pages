@@ -471,6 +471,39 @@ describe("<Status /> usage rendering helpers", () => {
     );
   });
 
+  it("should render the subscription name in the selected language", () => {
+    const translatedPlan = "Piano Premium";
+    addLocale("test", {
+      headers: {
+        "content-type": "text/plain; charset=utf-8",
+        "plural-forms": "nplurals = 2; plural = (n != 1);",
+      },
+      translations: {
+        "": {
+          Premium: {
+            msgid: "Premium",
+            msgstr: [translatedPlan],
+          },
+        },
+      },
+    });
+    useLocale("test");
+    const prop = createTestProps();
+    prop.settings.subscriptions = true;
+    prop.statusPage.radius_usage_enabled = true;
+    const component = shallow(<Status {...prop} />, {
+      context: {setLoading: jest.fn()},
+      disableLifecycleMethods: true,
+    });
+    component.setState({
+      radiusUsageSpinner: false,
+      userPlan: {name: "Premium"},
+    });
+    expect(component.find(".usage-overview-subscription strong").text()).toBe(
+      translatedPlan,
+    );
+  });
+
   it("should use the shared full button class for the upgrade action", () => {
     const prop = createTestProps();
     prop.settings.subscriptions = true;
