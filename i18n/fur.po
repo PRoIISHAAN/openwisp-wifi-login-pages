@@ -625,7 +625,7 @@ msgstr "Se no tu âs ricevût un SMS cul codiç di verifiche, domande un altri f
 #: client/components/mobile-phone-verification/mobile-phone-verification.js:286
 #, javascript-format
 msgid "RESEND_TOKEN_WAIT_LBL${ seconds }"
-msgstr "Un nuovo SMS può essere richiesto in ${ seconds } secondi."
+msgstr "Un gnûf SMS al pues jessi domandât tra ${ seconds } seconts."
 
 #: client/components/mobile-phone-verification/mobile-phone-verification.js:301
 msgid "RESEND_TOKEN"

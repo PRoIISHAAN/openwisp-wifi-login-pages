@@ -228,6 +228,11 @@ describe("<Status /> usage rendering helpers", () => {
         usageClass: "usage-low",
       },
       {
+        value: 10800,
+        result: 5400,
+        usageClass: "usage-low",
+      },
+      {
         result: 51,
         usageClass: "usage-medium",
       },
